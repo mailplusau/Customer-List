@@ -7,7 +7,7 @@
  * Remarks: Page to show the list of all the customers based on the franchisee.
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-01-21 10:21:34
+ * @Last Modified time: 2020-02-07 10:47:26
  *
  */
 
