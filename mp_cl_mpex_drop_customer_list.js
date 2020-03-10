@@ -7,7 +7,7 @@
  * Remarks: Client script for the Customer List Page       
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-01-21 10:21:47
+ * @Last Modified time: 2020-02-26 13:18:34
  *
  */
 
@@ -79,7 +79,8 @@ function onclick_reviewPage(custid) {
 	var params = {
 		custid: custid,
 		scriptid: 'customscript_sl_customer_list',
-		deployid: 'customdeploy_sl_customer_list'
+		deployid: 'customdeploy_sl_customer_list',
+		mpex: 'T'
 	}
 	params = JSON.stringify(params);
 
