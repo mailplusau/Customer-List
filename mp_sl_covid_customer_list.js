@@ -30,14 +30,14 @@ function main(request, response) {
 
     var inlinehtml2 = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"><script src="//code.jquery.com/jquery-1.11.0.min.js"></script><link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"><link href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"><script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><link rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2060796&c=1048144&h=9ee6accfd476c9cae718&_xt=.css"/><script src="https://1048144.app.netsuite.com/core/media/media.nl?id=2060797&c=1048144&h=ef2cda20731d146b5e98&_xt=.js"></script><link type="text/css" rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2090583&c=1048144&h=a0ef6ac4e28f91203dfe&_xt=.css">';
 
-    inlinehtml2 += '<div class="se-pre-con"></div><button type="button" class="btn btn-sm btn-info instruction_button" data-toggle="collapse" data-target="#demo">Click for Instructions</button><div id="demo" style="background-color: #cfeefc !important;border: 1px solid #417ed9;padding: 10px 10px 10px 20px;width:96%;position:absolute" class="collapse"></div>';
+    inlinehtml2 += '<div class="se-pre-con"></div><div id="demo" style="background-color: #cfeefc !important;border: 1px solid #417ed9;padding: 10px 10px 10px 20px;width:96%;position:absolute" class=""><b style="color: red;"><u>Important Information</u></b></br><br>The purpose of this page is to identify any change of service to your customer account.<br>To complete this page:<ol><li>Select the Operation Update status appropriate for each customer</li><li>Enter the effective date or date range depending on the update type, and</li><li>Click Save to complete your update</li></ol></br>What does each status mean:<ul><li><b>Cancel</b> – Terminated the service</li><li><b>Hold</b> – Clearing and holding items for the customer</li><li><b>Redirect</b> – Providing services to a different site or using MPEX</li><li><b>Reduce</b> – Less frequency (2x a week) or services (AM only)</li><li><b>Send Info</b> – Has asked about MP business continuity options</li><li><b>Suspend</b> – Temporarily suspending services for a period (i.e. 2-week lockdown)</li></ul></br> <small><i>Note: if you use Auto-Invoicing – these changes will be automatically applied. Therefore in the future - you can use the Suspend option when customers shut for holidays to generate the correct invoice automatically.<i></small></div>';
 
     var inlineHtml = '';
 
     //If role is Admin or System Support, dropdown to select zee
     if (role != 1000) {
 
-      inlinehtml2 += '<div class="col-xs-4 admin_section" style="width: 20%;left: 40%;position: absolute;"><b>Select Zee</b> <select class="form-control zee_dropdown" >';
+      inlinehtml2 += '<div class="col-xs-4 admin_section" style="width: 20%;left: 40%;position: absolute;top: 75%"><b>Select Zee</b> <select class="form-control zee_dropdown" >';
 
       //WS Edit: Updated Search to SMC Franchisee (exc Old/Inactives)
       //Search: SMC - Franchisees
@@ -75,7 +75,7 @@ function main(request, response) {
 
     form.addField('custpage_html2', 'inlinehtml').setPadding(1).setLayoutType('outsideabove').setDefaultValue(inlinehtml2);
 
-    inlineHtml += '<br><br><style>table#customer {font-size:12px; font-weight:bold; border-color: #24385b;} </style><table border="0" cellpadding="15" id="customer" class="tablesorter table table-striped" cellspacing="0" style="width: 100%;"><thead style="color: white;background-color: #607799;"><tr><th class="col-sm-2"><b>ID</b></th><th><b>CUSTOMER NAME</b></th><th class="" style="text-align: center;"><b>OPERATION TYPE</b></th><th class="" style="text-align: center;"><b>DATE EFFECTIVE</b></th><th class="" style="text-align: center;"><b>SUSPEND FROM</b></th><th class="" style="text-align: center;"><b>SUSPEND TO</b></th></tr></thead><tbody>';
+    inlineHtml += '<br><br><style>table#customer {font-size:12px; font-weight:bold; border-color: #24385b;} input[type=date]::-webkit-datetime-edit-year-field:not([aria-valuenow]),input[type=date]::-webkit-datetime-edit-month-field:not([aria-valuenow]),input[type=date]::-webkit-datetime-edit-day-field:not([aria-valuenow]) {color: transparent;}</style><table border="0" cellpadding="15" id="customer" class="tablesorter table table-striped" cellspacing="0" style="width: 100%;"><thead style="color: white;background-color: #607799;"><tr><th class="col-xs-1"><b>ID</b></th><th class=""><b>CUSTOMER NAME</b></th><th class="col-xs-1" style="text-align: center;"><b>OPERATION TYPE</b></th><th class="col-xs-1" style="text-align: center;"><b>DATE EFFECTIVE</b></th><th class="col-xs-1" style="text-align: center;"><b>SUSPEND FROM</b></th><th class="col-xs-1" style="text-align: center;"><b>SUSPEND TO</b></th></tr></thead><tbody>';
 
     var columns = new Array();
     columns[0] = new nlobjSearchColumn('name');
@@ -139,17 +139,26 @@ function main(request, response) {
       inlineHtml += '</select></td>';
       if (!isNullorEmpty(date_effective)) {
         date_effective = GetFormattedDate(date_effective);
+        inlineHtml += '<td><input type="date" class="form-control date_effective" disabled value="' + date_effective + '" data-custid="' + custid + '" /></td>';
+      } else {
+        inlineHtml += '<td><input type="date" class="form-control date_effective" disabled value="' + date_effective + '" data-custid="' + custid + '" style="color:transparent;"/></td>';
       }
       if (!isNullorEmpty(suspend_from)) {
         suspend_from = GetFormattedDate(suspend_from);
+        inlineHtml += '<td><input type="date" class="form-control suspend_from" disabled value="' + suspend_from + '" data-custid="' + custid + '" /></td>';
+      } else {
+        inlineHtml += '<td><input type="date" class="form-control suspend_from" disabled value="' + suspend_from + '" data-custid="' + custid + '" style="color:transparent;"/></td>';
       }
       if (!isNullorEmpty(suspend_to)) {
         suspend_to = GetFormattedDate(suspend_to);
+        inlineHtml += '<td><input type="date" class="form-control suspend_to" disabled value="' + suspend_to + '" data-custid="' + custid + '" /></td>';
+      } else {
+        inlineHtml += '<td><input type="date" class="form-control suspend_to" disabled value="' + suspend_to + '" data-custid="' + custid + '" style="color:transparent;"/></td>';
       }
 
-      inlineHtml += '<td><input type="date" class="form-control date_effective" disabled value="' + date_effective + '" data-custid="' + custid + '" /></td>';
-      inlineHtml += '<td><input type="date" class="form-control suspend_from" disabled value="' + suspend_from + '" data-custid="' + custid + '" /></td>';
-      inlineHtml += '<td><input type="date" class="form-control suspend_to" disabled value="' + suspend_to + '" data-custid="' + custid + '" /></td>';
+      
+      
+      
       inlineHtml += '</tr>';
 
       // count++;

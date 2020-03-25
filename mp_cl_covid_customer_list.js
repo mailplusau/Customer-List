@@ -42,10 +42,21 @@ function pageInit() {
 		main_table2[i].style.position = "absolute";
 		main_table2[i].style.left = "10%";
 		main_table2[i].style.width = "80%";
-		main_table2[i].style.top = "275px";
+		main_table2[i].style.top = "80%";
 	}
 
+	// var mainTable2 = document.getElementsByClassName("uir-inline-tag");
+ //    for (var i = 0; i < mainTable2.length; i++) {
+ //        mainTable2[i].style.position = "absolute";
+ //        mainTable2[i].style.left = "10%";
+ //        mainTable2[i].style.width = "80%";
+ //        mainTable2[i].style.top = "860px";
+ //    }
+
+
 }
+
+
 //On selecting zee, reload the SMC - Summary page with selected Zee parameter
 $(document).on("change", ".zee_dropdown", function(e) {
 
