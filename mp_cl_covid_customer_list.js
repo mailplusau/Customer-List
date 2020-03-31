@@ -62,7 +62,7 @@ $(document).on("change", ".zee_dropdown", function(e) {
 
 	var zee = $(this).val();
 
-	var url = baseURL + "/app/site/hosting/scriptlet.nl?script=925&deploy=1&compid=1048144&sorts[customername]=1";
+	var url = baseURL + "/app/site/hosting/scriptlet.nl?script=934&deploy=1&compid=1048144&sorts[customername]=1";
 
 	url += "&zee=" + zee + "";
 
@@ -137,16 +137,41 @@ function saveRecord() {
 	return true;
 }
 
+$(document).on('focus', '.date_effective', function(e) {
+	$(this).removeAttr("style");
+});
+
+$(document).on('focus', '.suspend_from', function(e) {
+	$(this).removeAttr("style");
+});
+
+$(document).on('focus', '.suspend_to', function(e) {
+	$(this).removeAttr("style");
+});
+
 $(document).on('change', '.operation_type', function(e) {
 
 	if ($('option:selected', this).val() == 2) {
 		$(this).closest('tr').find('.suspend_from').removeAttr("disabled");
+		$(this).closest('tr').find('.suspend_from').removeAttr("style");
 		$(this).closest('tr').find('.suspend_to').removeAttr("disabled");
+		$(this).closest('tr').find('.suspend_to').removeAttr("style");
 		$(this).closest('tr').find('.date_effective').attr("disabled", "disabled")
+		$(this).closest('tr').find('.date_effective').css("color", "transparent");
+	} else if ($('option:selected', this).val() != 0){
+		$(this).closest('tr').find('.suspend_from').attr("disabled", "disabled")
+		$(this).closest('tr').find('.suspend_from').css("color", "transparent");
+		$(this).closest('tr').find('.suspend_to').attr("disabled", "disabled")
+		$(this).closest('tr').find('.suspend_to').css("color", "transparent");
+		$(this).closest('tr').find('.date_effective').removeAttr("disabled")
+		$(this).closest('tr').find('.date_effective').removeAttr("style")
 	} else {
 		$(this).closest('tr').find('.suspend_from').attr("disabled", "disabled")
+		$(this).closest('tr').find('.suspend_from').css("color", "transparent");
 		$(this).closest('tr').find('.suspend_to').attr("disabled", "disabled")
-		$(this).closest('tr').find('.date_effective').removeAttr("disabled")
+		$(this).closest('tr').find('.suspend_to').css("color", "transparent");
+		$(this).closest('tr').find('.date_effective').attr("disabled", "disabled")
+		$(this).closest('tr').find('.date_effective').css("color", "transparent");
 	}
 });
 
