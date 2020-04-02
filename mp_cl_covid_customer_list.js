@@ -40,8 +40,8 @@ function pageInit() {
 
 	for (var i = 0; i < main_table2.length; i++) {
 		main_table2[i].style.position = "absolute";
-		main_table2[i].style.left = "10%";
-		main_table2[i].style.width = "80%";
+		// main_table2[i].style.left = "10%";
+		// main_table2[i].style.width = "80%";
 		main_table2[i].style.top = "80%";
 	}
 
@@ -94,6 +94,7 @@ function saveRecord() {
 	var date_effective_elem = document.getElementsByClassName("date_effective");
 	var suspend_from_elem = document.getElementsByClassName("suspend_from");
 	var suspend_to_elem = document.getElementsByClassName("suspend_to");
+	var operation_notes_elem = document.getElementsByClassName("operation_notes");
 
 	for (var i = 0; i < entity_id_elem.length; i++) {
 
@@ -101,6 +102,7 @@ function saveRecord() {
 		var date_effective = date_effective_elem[i].value;
 		var suspend_from = suspend_from_elem[i].value;
 		var suspend_to = suspend_to_elem[i].value;
+		var operation_notes = operation_notes_elem[i].value;
 
 
 		if (!isNullorEmpty(operation_type) && operation_type != 0) {
@@ -129,6 +131,7 @@ function saveRecord() {
 			customerRecord.setFieldValue('custentity_date_effective', dateeffective);
 			customerRecord.setFieldValue('custentity_suspend_from', suspendfrom);
 			customerRecord.setFieldValue('custentity_suspend_to', suspendto);
+			customerRecord.setFieldValue('custentity_operation_notes', operation_notes);
 			nlapiSubmitRecord(customerRecord);
 		}
 
@@ -151,12 +154,13 @@ $(document).on('focus', '.suspend_to', function(e) {
 
 $(document).on('change', '.operation_type', function(e) {
 
+	$(this).closest('tr').find('.operation_notes').removeAttr("disabled");
 	if ($('option:selected', this).val() == 2) {
 		$(this).closest('tr').find('.suspend_from').removeAttr("disabled");
 		$(this).closest('tr').find('.suspend_from').removeAttr("style");
 		$(this).closest('tr').find('.suspend_to').removeAttr("disabled");
 		$(this).closest('tr').find('.suspend_to').removeAttr("style");
-		$(this).closest('tr').find('.date_effective').attr("disabled", "disabled")
+		$(this).closest('tr').find('.date_effective').attr("disabled", "disabled");
 		$(this).closest('tr').find('.date_effective').css("color", "transparent");
 	} else if ($('option:selected', this).val() != 0){
 		$(this).closest('tr').find('.suspend_from').attr("disabled", "disabled")
