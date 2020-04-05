@@ -7,7 +7,7 @@
  * Remarks: Client script for the Customer List Page       
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-02-26 13:18:34
+ * @Last Modified time: 2020-04-03 12:11:49
  *
  */
 
@@ -54,7 +54,7 @@ function pageInit() {
 		main_table2[i].style.position = "absolute";
 		main_table2[i].style.left = "10%";
         main_table2[i].style.width = "80%";
-        main_table2[i].style.top = "275px";
+        // main_table2[i].style.top = "275px";
 	}
 
 }
@@ -66,7 +66,7 @@ $(document).on('click', '.instruction_button', function(e) {
         mainTable2[i].style.position = "absolute";
         mainTable2[i].style.left = "10%";
         mainTable2[i].style.width = "80%";
-        mainTable2[i].style.top = "600px";
+        mainTable2[i].style.top = "300px";
     }
 
     $('.admin_section').css("top", "520px");
@@ -102,8 +102,14 @@ $(document).on("change", ".zee_dropdown", function(e) {
 
 //On click of Cancel, goes to the cancel page
 function onclick_cancel(custid) {
-	var upload_url = baseURL + nlapiResolveURL('SUITELET', 'customscript_sl_cancel_customer', 'customdeploy_sl_cancel_customer') + '&unlayered=T&custid=' + custid;
+	var customerRecord = nlapiLoadRecord('customer', custid);
+	customerRecord.setFieldValue('custentity_mpex_drop_notified', 2);
+	nlapiSubmitRecord(customerRecord);
+
+	https://1048144.app.netsuite.com/app/site/hosting/scriptlet.nl?script=929&deploy=1&compid=1048144
+	var upload_url = baseURL + nlapiResolveURL('SUITELET', 'customscript_sl_mpex_drop_customer_list', 'customdeploy_sl_mpex_drop_customer_list');
 	window.open(upload_url, "_self", "height=750,width=650,modal=yes,alwaysRaised=yes");
+
 }
 
 //From the cancel page, it comes back to this function and reloads the main page

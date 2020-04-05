@@ -75,7 +75,7 @@ function main(request, response) {
 
         form.addField('custpage_html2', 'inlinehtml').setPadding(1).setLayoutType('outsideabove').setDefaultValue(inlinehtml2);
 
-        inlineHtml += '<br><br><style>table#customer {font-size:12px; font-weight:bold; border-color: #24385b;} </style><table border="0" cellpadding="15" id="customer" class="tablesorter table table-striped table-responsive" cellspacing="0" style="width: 100%;"><thead style="color: white;background-color: #607799;"><tr><th class="col-xs-2"><b>ID</b></th><th class="col-xs-6"><b>CUSTOMER NAME</b></th><th class="col-xs-2" style="text-align: center;"><b>OPERATION UPDATE</b></th><th class="col-xs-1" style="text-align: center;"><b>DATE EFFECTIVE</b></th><th class="col-xs-1" style="text-align: center;"><b>SUSPEND FROM</b></th><th class="col-xs-1" style="text-align: center;"><b>SUSPEND TO</b></th><th class="col-xs-1" style="text-align: center;"><b>OPERATION NOTES</b></th></tr></thead><tbody>';
+        inlineHtml += '<br><br><style>table#customer {font-size:12px; font-weight:bold; border-color: #24385b;} .orangeclass{background-color: #f3c48a7d !important;}</style><table border="0" cellpadding="15" id="customer" class="tablesorter table table-responsive" cellspacing="0" style="width: 100%;"><thead style="color: white;background-color: #607799;"><tr><th class="col-xs-2"><b>ID</b></th><th class="col-xs-6"><b>CUSTOMER NAME</b></th><th class="col-xs-2" style="text-align: center;"><b>OPERATION UPDATE</b></th><th class="col-xs-1" style="text-align: center;"><b>DATE EFFECTIVE</b></th><th class="col-xs-1" style="text-align: center;"><b>SUSPEND FROM</b></th><th class="col-xs-1" style="text-align: center;"><b>SUSPEND TO</b></th><th class="col-xs-1" style="text-align: center;"><b>OPERATION NOTES</b></th></tr></thead><tbody>';
 
 
         // var operation_type_search = nlapiLoadSearch('customlist_operation_type', 'customsearch_operation_type')
@@ -93,9 +93,11 @@ function main(request, response) {
 
         var resultSetCustomer = customerSearch.runSearch();
 
+        var row_color = '';
 
         resultSetCustomer.forEachResult(function(searchResult) {
 
+            var row_color = '';
             var custid = searchResult.getValue('internalid');
             var entityid = searchResult.getValue('entityid');
             var companyname = searchResult.getValue('companyname');
@@ -105,7 +107,26 @@ function main(request, response) {
             var suspend_to = searchResult.getValue('custentity_suspend_to');
             var operation_notes = searchResult.getValue('custentity_operation_notes');
 
-            inlineHtml += '<tr><td><input type="text" class="form-control entity_id" readonly value="' + entityid + '" /></td><td><input type"text" class="form-control company_name" value="' + companyname + '" data-custid="' + custid + '" readonly /></td>';
+            if (operation_type == 1) {
+                row_color = 'danger'
+            }
+            if (operation_type == 2) {
+                row_color = 'orangeclass'
+            }
+            if (operation_type == 3) {
+                row_color = 'info'
+            }
+            if (operation_type == 4) {
+                row_color = 'success'
+            }
+            if (operation_type == 5) {
+                row_color = 'bg-warning'
+            }
+            if (operation_type == 6) {
+                row_color = 'orangeclass'
+            }
+
+            inlineHtml += '<tr class="' + row_color + '"><td><input type="text" class="form-control entity_id" readonly value="' + entityid + '" /></td><td><input type"text" class="form-control company_name" value="' + companyname + '" data-custid="' + custid + '" readonly /></td>';
             inlineHtml += '<td><select class="form-control operation_type" id="operation_type" data-custid="' + custid + '"><option value="0"></option>';
 
             if (operation_type == 1) {
@@ -174,7 +195,7 @@ function main(request, response) {
                 inlineHtml += '<td><input type="date" class="form-control suspend_to" disabled value="' + suspend_to + '" data-custid="' + custid + '" /></td>';
             } else {
                 inlineHtml += '<td><input type="date" class="form-control suspend_to" disabled value="' + suspend_to + '" data-custid="' + custid + '" style="color:transparent;"/></td>';
-            } 
+            }
 
             if (!isNullorEmpty(operation_notes)) {
                 inlineHtml += '<td><input type="text" class="form-control operation_notes" disabled value="' + operation_notes + '" data-custid="' + custid + '" /></td>';
