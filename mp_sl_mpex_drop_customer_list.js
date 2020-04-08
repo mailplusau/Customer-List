@@ -7,7 +7,7 @@
  * Remarks: Page to show the list of all the customers based on the franchisee.
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-04-03 12:11:45
+ * @Last Modified time: 2020-04-08 08:11:01
  *
  */
 
@@ -20,13 +20,9 @@ var role = ctx.getRole();
 if (role == 1000) {
     //Franchisee
     zee = ctx.getUser();
+} else if (role == 3) { //Administrator
+    zee = 0; //test
 }
-// } else if (role == 3) { //Administrator
-//     zee = 6; //test
-// } else { // System Support
-//     zee = 425904; //test-AR
-// }
-
 var ctx = nlapiGetContext();
 
 var baseURL = 'https://1048144.app.netsuite.com';
@@ -114,10 +110,12 @@ function main(request, response) {
         var allocated_customers_date_given = [];
 
         if (zee != 0) {
-
-            var addFilterExpression = new nlobjSearchFilter('custrecord_cust_prod_stock_zee', null, 'anyof', zee);
+            nlapiLogExecution('DEBUG', 'zee', zee);
+            var addFilterExpression = new nlobjSearchFilter('partner', 'CUSTRECORD_CUST_PROD_STOCK_CUSTOMER', 'is', zee);
             mpexProdSearch.addFilter(addFilterExpression);
         }
+
+        // nlapiLogExecution('DEBUG', 'zee', zee);
 
         var resultSetMPEXProd = mpexProdSearch.runSearch();
 
@@ -129,6 +127,7 @@ function main(request, response) {
             usageStart = ctx.getRemainingUsage();
 
             var custid = searchResult.getValue("internalid", "CUSTRECORD_CUST_PROD_STOCK_CUSTOMER", "GROUP");
+            var allocated_date = searchResult.getValue("custrecord_cust_date_stock_given", null, "GROUP");
             // var custid = searchResult.getValue('internalid');
             // var entityid = searchResult.getValue('entityid');
             // var companyname = searchResult.getValue('companyname');
@@ -164,7 +163,7 @@ function main(request, response) {
             // allocated_customers_zee_text[allocated_customers_zee_text.length] = partner_text;
             // allocated_customers_zee[allocated_customers_zee.length] = partner;
             // allocated_customers_drop_off[allocated_customers_drop_off.length] = drop_off_date;
-            // allocated_customers_date_given[allocated_customers_date_given.length] = resultMpexProd[0].getValue("custentity_mpex_drop_date", "CUSTRECORD_CUST_PROD_STOCK_CUSTOMER", "GROUP");
+            allocated_customers_date_given[allocated_customers_date_given.length] = allocated_date;
             //     }
             // }
 
@@ -174,10 +173,16 @@ function main(request, response) {
         });
 
         if (!isNullorEmpty(allocated_customer_id)) {
+            nlapiLogExecution('DEBUG', allocated_customer_id);
             //Search: AUDIT - Customer Selected for MPEX Drop Off
             var customerSearch = nlapiLoadSearch('customer', 'customsearch3245');
-            var addFilterExpression = new nlobjSearchFilter('internalid', null, 'noneof', allocated_customer_id);
-            customerSearch.addFilter(addFilterExpression);
+            var addFilterExpression = new Array();
+            addFilterExpression[addFilterExpression.length] = new nlobjSearchFilter('internalid', null, 'noneof', allocated_customer_id);
+            if (zee != 0) {
+                nlapiLogExecution('DEBUG', 'zee', zee);
+                addFilterExpression[addFilterExpression.length] = new nlobjSearchFilter('partner', null, 'is', zee);
+            }
+            customerSearch.addFilters(addFilterExpression);
             var resultSetCustomer = customerSearch.runSearch();
 
 
