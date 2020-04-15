@@ -7,7 +7,7 @@
  * Remarks: Page to show the list of all the customers based on the franchisee.
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-04-08 08:11:01
+ * @Last Modified time: 2020-04-15 15:58:30
  *
  */
 
@@ -39,9 +39,9 @@ function main(request, response) {
 
         var form = nlapiCreateForm('Customer Waiting For MPEX Drop-Off');
 
-        var inlinehtml2 = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"><script src="//code.jquery.com/jquery-1.11.0.min.js"></script><link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"><link href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"><script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><link rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2060796&c=1048144&h=9ee6accfd476c9cae718&_xt=.css"/><script src="https://1048144.app.netsuite.com/core/media/media.nl?id=2060797&c=1048144&h=ef2cda20731d146b5e98&_xt=.js"></script><link type="text/css" rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2090583&c=1048144&h=a0ef6ac4e28f91203dfe&_xt=.css">';
+        var inlinehtml2 = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"><script src="https://code.jquery.com/jquery-3.3.1.js"></script><link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"><link href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"><script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><link rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2060796&c=1048144&h=9ee6accfd476c9cae718&_xt=.css"/><script src="https://1048144.app.netsuite.com/core/media/media.nl?id=2060797&c=1048144&h=ef2cda20731d146b5e98&_xt=.js"></script><script src=""></script><link type="text/css" rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2090583&c=1048144&h=a0ef6ac4e28f91203dfe&_xt=.css"><script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script><script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script><script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script><script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script><script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script><link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"><link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.1/css/buttons.dataTables.min.css">';
 
-        inlinehtml2 += '<div class="se-pre-con"></div><button type="button" class="btn btn-sm btn-info instruction_button" data-toggle="collapse" data-target="#demo">Click for Instructions</button><div id="demo" style="background-color: #cfeefc !important;border: 1px solid #417ed9;padding: 10px 10px 10px 20px;width:96%;position:absolute" class="collapse">Below is a list of customers that are awaiting MPEX stock allocation. The details of product type, quantity and contact name are available in your email<br><ol><li>Please allocate MPEX stock to the customers listed as soon as possible.</li><li>Once you allocate MPEX to this customer they will automatically be removed from the list.</li><li>Click on the <b>NO STOCK REQUIRED</b> button in the event no stock is required</li></ol></div>';
+        inlinehtml2 += '<div class="se-pre-con"></div><div id="demo" style="background-color: #cfeefc !important;border: 1px solid #417ed9;padding: 10px 10px 10px 20px;width:96%;position:absolute" class="">Below is a list of customers that are awaiting MPEX stock allocation. The details of product type, quantity and contact name are available in your email<br><ol><li>Please allocate MPEX stock to the customers listed as soon as possible.</li><li>Once you allocate MPEX to this customer they will automatically be removed from the list.</li><li>Click on the <b>NO STOCK REQUIRED</b> button in the event no stock is required</li><li> Click on the <b>COVID-19 DELAY</b> button to postpone stock drop off for a month</li></ol></div>';
 
         var inlineQty = '';
 
@@ -86,7 +86,7 @@ function main(request, response) {
 
         form.addField('custpage_html2', 'inlinehtml').setPadding(1).setLayoutType('outsideabove').setDefaultValue(inlinehtml2);
 
-        inlineQty += '<br><br><style>table#customer {font-size:12px; font-weight:bold; border-color: #24385b;} </style><table border="0" cellpadding="15" id="customer" class="tablesorter table" cellspacing="0" style="width: 100%;"><thead style="color: white;background-color: #607799;"><tr><th class=""><b>MPEX ALLOCATED</b></th><th><b>ID</b></th><th><b>CUSTOMER NAME</b></th><th><b>FRANCHISEE</b></th><th><b>DROP OFF DATE</b></th><th><b>ALLOCATION DATE</b></th><th class="" style="text-align: center;"><b>ACTION</b></th></tr></thead><tbody>';
+        inlineQty += '<br><br><style>table#customer {font-size:12px; font-weight:bold; border-color: #24385b;} </style><table border="0" cellpadding="15" id="customer" class="tablesorter table" cellspacing="0" style="width: 100%;"><thead style="color: white;background-color: #607799;"><tr><th class=""><b>MPEX ALLOCATED</b></th><th><b>ID</b></th><th><b>CUSTOMER NAME</b></th><th><b>FRANCHISEE</b></th><th><b>DROP OFF DATE</b></th><th class="" style="text-align: center;"><b>ACTION</b></th></tr></thead><tbody>';
 
 
 
@@ -172,6 +172,12 @@ function main(request, response) {
             return true;
         });
 
+        var exception_allocated_customer_id = [];
+        var exception_allocated_customers_entity = [];
+        var exception_allocated_customers_name = [];
+        var exception_allocated_customers_zee_text = [];
+        var exception_allocated_customers_drop_off = [];
+
         if (!isNullorEmpty(allocated_customer_id)) {
             nlapiLogExecution('DEBUG', allocated_customer_id);
             //Search: AUDIT - Customer Selected for MPEX Drop Off
@@ -186,6 +192,7 @@ function main(request, response) {
             var resultSetCustomer = customerSearch.runSearch();
 
 
+
             resultSetCustomer.forEachResult(function(searchResult) {
 
                 var custid = searchResult.getValue('internalid');
@@ -195,11 +202,23 @@ function main(request, response) {
                 var partner_text = searchResult.getText('partner');
                 var drop_off_date = searchResult.getValue('custentity_mpex_drop_date');
 
-                inlineQty += '<tr class="dynatable-editable"><td style="text-align: center;"></td><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + custid + '"><p style="text-align:left;">' + entityid + '</p></a></td><td><p style="text-align:left;">' + companyname + '</p></td><td><p style="text-align:left;">' + partner_text + '</p></td><td><p style="text-align:left;">' + drop_off_date + '</p></td><td><p style="text-align:left;"></p></td><td><div class="row"><div class="col-sm-12"><input type="button" id="cancel_customer" class="form-control btn-danger" value="NO STOCK REQUIRED" onclick="onclick_cancel(' + custid + ')"></div></div></td></tr>';
+                inlineQty += '<tr class="dynatable-editable"><td style="text-align: center;"></td><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + custid + '"><p style="text-align:left;">' + entityid + '</p></a></td><td><p style="text-align:left;">' + companyname + '</p></td><td><p style="text-align:left;">' + partner_text + '</p></td><td><p style="text-align:left;">' + drop_off_date + '</p></td><td><div class="row"><div class="col-sm-6"><input type="button"  class="form-control btn-danger" value="NO STOCK REQUIRED" onclick="onclick_cancel(' + custid + ')"></div><div class="col-sm-6"><input type="button"  class="form-control btn-warning" value="COVID-19 DELAY" onclick="onclick_delay(' + custid + ')"></div></div></td></tr>';
+
+                exception_allocated_customer_id[exception_allocated_customer_id.length] = custid;
+                exception_allocated_customers_entity[exception_allocated_customers_entity.length] = entityid;
+                exception_allocated_customers_name[exception_allocated_customers_name.length] = companyname;
+                exception_allocated_customers_zee_text[exception_allocated_customers_zee_text.length] = partner_text;
+                exception_allocated_customers_drop_off[exception_allocated_customers_drop_off.length] = drop_off_date;
 
                 return true;
             });
         }
+
+        // form.addField('custpage_cust_id', 'textarea', 'TO').setDisplayType('hidden').setDefaultValue(exception_allocated_customer_id.toString());
+        // form.addField('custpage_cust_entity', 'textarea', 'TO').setDisplayType('hidden').setDefaultValue(exception_allocated_customers_entity.toString());
+        // form.addField('custpage_cust_name', 'textarea', 'TO').setDisplayType('hidden').setDefaultValue(exception_allocated_customers_name.toString());
+        // form.addField('custpage_zee', 'textarea', 'TO').setDisplayType('hidden').setDefaultValue(exception_allocated_customers_zee_text.toString());
+        // form.addField('custpage_drop_date', 'textarea', 'TO').setDisplayType('hidden').setDefaultValue(exception_allocated_customers_drop_off.toString());
 
         // for (var x = 0; x < allocated_customer_id.length; x++) {
 
@@ -225,7 +244,7 @@ function main(request, response) {
         inlineQty += '</table><br/>';
 
         form.addField('preview_table', 'inlinehtml', '').setLayoutType('outsidebelow', 'startrow').setDefaultValue(inlineQty);
-
+        form.addButton('back', 'Download CSV', 'onclick_download()');
         //WS Edit: Updated customscript_cl_smc_summary to comment dynatable sort
         form.setScript('customscript_cl_mpex_drop_customer_list');
         response.writePage(form);
