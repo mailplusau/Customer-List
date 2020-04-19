@@ -7,7 +7,7 @@
  * Remarks: Page to show the list of all the customers based on the franchisee.
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-04-15 15:58:30
+ * @Last Modified time: 2020-04-16 13:47:57
  *
  */
 
@@ -96,7 +96,7 @@ function main(request, response) {
 
 
 
-
+        //AUDIT - MPEX Customer Drop Off
 
         var mpexProdSearch = nlapiLoadSearch('customrecord_customer_product_stock', 'customsearch3243');
 
@@ -178,41 +178,43 @@ function main(request, response) {
         var exception_allocated_customers_zee_text = [];
         var exception_allocated_customers_drop_off = [];
 
+
+        nlapiLogExecution('DEBUG', allocated_customer_id);
+        //Search: AUDIT - Customer Selected for MPEX Drop Off
+        var customerSearch = nlapiLoadSearch('customer', 'customsearch3245');
+        var addFilterExpression = new Array();
         if (!isNullorEmpty(allocated_customer_id)) {
-            nlapiLogExecution('DEBUG', allocated_customer_id);
-            //Search: AUDIT - Customer Selected for MPEX Drop Off
-            var customerSearch = nlapiLoadSearch('customer', 'customsearch3245');
-            var addFilterExpression = new Array();
             addFilterExpression[addFilterExpression.length] = new nlobjSearchFilter('internalid', null, 'noneof', allocated_customer_id);
-            if (zee != 0) {
-                nlapiLogExecution('DEBUG', 'zee', zee);
-                addFilterExpression[addFilterExpression.length] = new nlobjSearchFilter('partner', null, 'is', zee);
-            }
-            customerSearch.addFilters(addFilterExpression);
-            var resultSetCustomer = customerSearch.runSearch();
-
-
-
-            resultSetCustomer.forEachResult(function(searchResult) {
-
-                var custid = searchResult.getValue('internalid');
-                var entityid = searchResult.getValue('entityid');
-                var companyname = searchResult.getValue('companyname');
-                var partner = searchResult.getValue('partner');
-                var partner_text = searchResult.getText('partner');
-                var drop_off_date = searchResult.getValue('custentity_mpex_drop_date');
-
-                inlineQty += '<tr class="dynatable-editable"><td style="text-align: center;"></td><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + custid + '"><p style="text-align:left;">' + entityid + '</p></a></td><td><p style="text-align:left;">' + companyname + '</p></td><td><p style="text-align:left;">' + partner_text + '</p></td><td><p style="text-align:left;">' + drop_off_date + '</p></td><td><div class="row"><div class="col-sm-6"><input type="button"  class="form-control btn-danger" value="NO STOCK REQUIRED" onclick="onclick_cancel(' + custid + ')"></div><div class="col-sm-6"><input type="button"  class="form-control btn-warning" value="COVID-19 DELAY" onclick="onclick_delay(' + custid + ')"></div></div></td></tr>';
-
-                exception_allocated_customer_id[exception_allocated_customer_id.length] = custid;
-                exception_allocated_customers_entity[exception_allocated_customers_entity.length] = entityid;
-                exception_allocated_customers_name[exception_allocated_customers_name.length] = companyname;
-                exception_allocated_customers_zee_text[exception_allocated_customers_zee_text.length] = partner_text;
-                exception_allocated_customers_drop_off[exception_allocated_customers_drop_off.length] = drop_off_date;
-
-                return true;
-            });
         }
+        if (zee != 0) {
+            nlapiLogExecution('DEBUG', 'zee', zee);
+            addFilterExpression[addFilterExpression.length] = new nlobjSearchFilter('partner', null, 'is', zee);
+        }
+        customerSearch.addFilters(addFilterExpression);
+        var resultSetCustomer = customerSearch.runSearch();
+
+
+
+        resultSetCustomer.forEachResult(function(searchResult) {
+
+            var custid = searchResult.getValue('internalid');
+            var entityid = searchResult.getValue('entityid');
+            var companyname = searchResult.getValue('companyname');
+            var partner = searchResult.getValue('partner');
+            var partner_text = searchResult.getText('partner');
+            var drop_off_date = searchResult.getValue('custentity_mpex_drop_date');
+
+            inlineQty += '<tr class="dynatable-editable"><td style="text-align: center;"></td><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + custid + '"><p style="text-align:left;">' + entityid + '</p></a></td><td><p style="text-align:left;">' + companyname + '</p></td><td><p style="text-align:left;">' + partner_text + '</p></td><td><p style="text-align:left;">' + drop_off_date + '</p></td><td><div class="row"><div class="col-sm-6"><input type="button"  class="form-control btn-danger" value="NO STOCK REQUIRED" onclick="onclick_cancel(' + custid + ')"></div><div class="col-sm-6"><input type="button"  class="form-control btn-warning" value="COVID-19 DELAY" onclick="onclick_delay(' + custid + ')"></div></div></td></tr>';
+
+            exception_allocated_customer_id[exception_allocated_customer_id.length] = custid;
+            exception_allocated_customers_entity[exception_allocated_customers_entity.length] = entityid;
+            exception_allocated_customers_name[exception_allocated_customers_name.length] = companyname;
+            exception_allocated_customers_zee_text[exception_allocated_customers_zee_text.length] = partner_text;
+            exception_allocated_customers_drop_off[exception_allocated_customers_drop_off.length] = drop_off_date;
+
+            return true;
+        });
+
 
         // form.addField('custpage_cust_id', 'textarea', 'TO').setDisplayType('hidden').setDefaultValue(exception_allocated_customer_id.toString());
         // form.addField('custpage_cust_entity', 'textarea', 'TO').setDisplayType('hidden').setDefaultValue(exception_allocated_customers_entity.toString());
