@@ -116,7 +116,7 @@ function main(request, response) {
             if (operation_type == 3) {
                 row_color = 'info'
             }
-            if (operation_type == 4) {
+            if (operation_type == 4 || operation_type == 7) {
                 row_color = 'success'
             }
             if (operation_type == 5) {
@@ -158,6 +158,12 @@ function main(request, response) {
                 inlineHtml += '<option value="' + 6 + '" selected>Hold</option>';
             } else {
                 inlineHtml += '<option value="' + 6 + '" >Hold</option>';
+            } 
+
+            if (operation_type == 7) {
+                inlineHtml += '<option value="' + 7 + '" selected>Business As Usual</option>';
+            } else {
+                inlineHtml += '<option value="' + 7 + '" >Business As Usual</option>';
             }
 
             // resultSetOperationType.forEachResult(function(searchResult2) {
@@ -180,25 +186,25 @@ function main(request, response) {
             inlineHtml += '</select></td>';
             if (!isNullorEmpty(date_effective)) {
                 date_effective = GetFormattedDate(date_effective);
-                inlineHtml += '<td><input type="date" class="form-control date_effective" disabled value="' + date_effective + '" data-custid="' + custid + '" /></td>';
+                inlineHtml += '<td><input type="date" class="form-control date_effective"  value="' + date_effective + '" data-custid="' + custid + '" /></td>';
             } else {
                 inlineHtml += '<td><input type="date" class="form-control date_effective" disabled value="' + date_effective + '" data-custid="' + custid + '" style="color:transparent;"/></td>';
             }
             if (!isNullorEmpty(suspend_from)) {
                 suspend_from = GetFormattedDate(suspend_from);
-                inlineHtml += '<td><input type="date" class="form-control suspend_from" disabled value="' + suspend_from + '" data-custid="' + custid + '" /></td>';
+                inlineHtml += '<td><input type="date" class="form-control suspend_from"  value="' + suspend_from + '" data-custid="' + custid + '" /></td>';
             } else {
                 inlineHtml += '<td><input type="date" class="form-control suspend_from" disabled value="' + suspend_from + '" data-custid="' + custid + '" style="color:transparent;"/></td>';
             }
             if (!isNullorEmpty(suspend_to)) {
                 suspend_to = GetFormattedDate(suspend_to);
-                inlineHtml += '<td><input type="date" class="form-control suspend_to" disabled value="' + suspend_to + '" data-custid="' + custid + '" /></td>';
+                inlineHtml += '<td><input type="date" class="form-control suspend_to"  value="' + suspend_to + '" data-custid="' + custid + '" /></td>';
             } else {
                 inlineHtml += '<td><input type="date" class="form-control suspend_to" disabled value="' + suspend_to + '" data-custid="' + custid + '" style="color:transparent;"/></td>';
             }
 
             if (!isNullorEmpty(operation_notes)) {
-                inlineHtml += '<td><input type="text" class="form-control operation_notes" disabled value="' + operation_notes + '" data-custid="' + custid + '" /></td>';
+                inlineHtml += '<td><input type="text" class="form-control operation_notes"  value="' + operation_notes + '" data-custid="' + custid + '" /></td>';
             } else {
                 inlineHtml += '<td><input type="text" class="form-control operation_notes" disabled value="" data-custid="' + custid + '" /></td>';
             }
