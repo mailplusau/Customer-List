@@ -100,6 +100,7 @@ function GetFormattedDate(stringDate) {
 function saveRecord() {
 
     var entity_id_elem = document.getElementsByClassName("entity_id");
+    var company_name_elem = document.getElementsByClassName("company_name");
     var operation_type_elem = document.getElementsByClassName("operation_type");
     var date_effective_elem = document.getElementsByClassName("date_effective");
     var suspend_from_elem = document.getElementsByClassName("suspend_from");
@@ -108,6 +109,7 @@ function saveRecord() {
 
     for (var i = 0; i < entity_id_elem.length; i++) {
 
+        var company_name = company_name_elem[i].value;
         var operation_type = operation_type_elem[i].value;
         var date_effective = date_effective_elem[i].value;
         var suspend_from = suspend_from_elem[i].value;
@@ -119,29 +121,72 @@ function saveRecord() {
 
             var cust_id = operation_type_elem[i].getAttribute('data-custid');
 
-            if (!isNullorEmpty(date_effective)) {
-                var splitDateEffective = date_effective.split('-');
-                var dateeffective = splitDateEffective[2] + '/' + splitDateEffective[1] + '/' + splitDateEffective[0];
-            }
+            console.log(i);
+            console.log(cust_id);
+            console.log(company_name);
+            console.log(operation_type);
+            console.log(date_effective);
+            console.log(suspend_from);
+            console.log(suspend_to);
 
-            if (!isNullorEmpty(suspend_from)) {
-                var splitSuspendFrom = suspend_from.split('-');
-                var suspendfrom = splitSuspendFrom[2] + '/' + splitSuspendFrom[1] + '/' + splitSuspendFrom[0];
-            }
-
-            if (!isNullorEmpty(suspend_to)) {
-                var splitSuspendTo = suspend_to.split('-');
-                var suspendto = splitSuspendTo[2] + '/' + splitSuspendTo[1] + '/' + splitSuspendTo[0];
-            }
-
-
+            var dateeffective = null;
+            var suspendfrom = null;
+            var suspendto = null;
 
             var customerRecord = nlapiLoadRecord('customer', cust_id);
-            customerRecord.setFieldValue('custentity_operational_update', operation_type);
-            customerRecord.setFieldValue('custentity_date_effective', dateeffective);
-            customerRecord.setFieldValue('custentity_suspend_from', suspendfrom);
-            customerRecord.setFieldValue('custentity_suspend_to', suspendto);
-            customerRecord.setFieldValue('custentity_operation_notes', operation_notes);
+
+            if (operation_type == 2) {
+                if (!isNullorEmpty(suspend_from)) {
+                    var splitSuspendFrom = suspend_from.split('-');
+                    suspendfrom = splitSuspendFrom[2] + '/' + splitSuspendFrom[1] + '/' + splitSuspendFrom[0];
+                } else {
+                    alert('Please Enter Suspend From Date for Customer: ' + company_name);
+                    return false;
+                }
+
+                if (!isNullorEmpty(suspend_to)) {
+                    var splitSuspendTo = suspend_to.split('-');
+                    suspendto = splitSuspendTo[2] + '/' + splitSuspendTo[1] + '/' + splitSuspendTo[0];
+                } else {
+                    alert('Please Enter Suspend To Date for Customer: ' + company_name);
+                    return false;
+                }
+
+                customerRecord.setFieldValue('custentity_operational_update', operation_type);
+                customerRecord.setFieldValue('custentity_date_effective', null);
+                customerRecord.setFieldValue('custentity_suspend_from', suspendfrom);
+                customerRecord.setFieldValue('custentity_suspend_to', suspendto);
+                customerRecord.setFieldValue('custentity_operation_notes', operation_notes);
+
+            } else {
+                if (!isNullorEmpty(date_effective)) {
+                    var splitDateEffective = date_effective.split('-');
+                    dateeffective = splitDateEffective[2] + '/' + splitDateEffective[1] + '/' + splitDateEffective[0];
+                    customerRecord.setFieldValue('custentity_operational_update', operation_type);
+                    customerRecord.setFieldValue('custentity_date_effective', dateeffective);
+                    customerRecord.setFieldValue('custentity_suspend_from', null);
+                    customerRecord.setFieldValue('custentity_suspend_to', null);
+                    customerRecord.setFieldValue('custentity_operation_notes', operation_notes);
+                } else {
+                    alert('Please Enter Date Effective for Customer: ' + company_name);
+                    return false;
+                }
+            }
+
+
+
+
+
+            console.log(i);
+            console.log(cust_id);
+            console.log(company_name);
+            console.log(operation_type);
+            console.log(date_effective);
+            console.log(suspend_from);
+            console.log(suspend_to);
+
+
+
             nlapiSubmitRecord(customerRecord);
         }
 
@@ -196,36 +241,36 @@ $(document).on('change', '.operation_type', function(e) {
         $(this).closest('tr').removeClass('bg-warning');
     }
     if ($('option:selected', this).val() == 2) {
-        $(this).closest('tr').addClass('orangeclass'); 
+        $(this).closest('tr').addClass('orangeclass');
         $(this).closest('tr').removeClass('danger');
         $(this).closest('tr').removeClass('info');
         $(this).closest('tr').removeClass('success');
         $(this).closest('tr').removeClass('bg-warning');
     }
     if ($('option:selected', this).val() == 3) {
-        $(this).closest('tr').addClass('info'); 
+        $(this).closest('tr').addClass('info');
         $(this).closest('tr').removeClass('orangeclass');
         $(this).closest('tr').removeClass('danger');
         $(this).closest('tr').removeClass('success');
         $(this).closest('tr').removeClass('bg-warning');
     }
-    if ($('option:selected', this).val() == 4) {
-        $(this).closest('tr').addClass('success'); 
+    if ($('option:selected', this).val() == 4 || $('option:selected', this).val() == 7) {
+        $(this).closest('tr').addClass('success');
         $(this).closest('tr').removeClass('orangeclass');
         $(this).closest('tr').removeClass('info');
         $(this).closest('tr').removeClass('danger');
         $(this).closest('tr').removeClass('bg-warning');
     }
     if ($('option:selected', this).val() == 5) {
-       $(this).closest('tr').addClass('bg-warning'); 
-       $(this).closest('tr').removeClass('orangeclass');
+        $(this).closest('tr').addClass('bg-warning');
+        $(this).closest('tr').removeClass('orangeclass');
         $(this).closest('tr').removeClass('info');
         $(this).closest('tr').removeClass('success');
         $(this).closest('tr').removeClass('danger');
     }
     if ($('option:selected', this).val() == 6) {
-       $(this).closest('tr').addClass('orangeclass'); 
-       $(this).closest('tr').removeClass('danger');
+        $(this).closest('tr').addClass('orangeclass');
+        $(this).closest('tr').removeClass('danger');
         $(this).closest('tr').removeClass('info');
         $(this).closest('tr').removeClass('success');
         $(this).closest('tr').removeClass('bg-warning');
