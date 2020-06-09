@@ -148,8 +148,8 @@ function saveRecord() {
                     var splitSuspendTo = suspend_to.split('-');
                     suspendto = splitSuspendTo[2] + '/' + splitSuspendTo[1] + '/' + splitSuspendTo[0];
                 } else {
-                    alert('Please Enter Suspend To Date for Customer: ' + company_name);
-                    return false;
+                    // alert('Please Enter Suspend To Date for Customer: ' + company_name);
+                    // return false;
                 }
 
                 customerRecord.setFieldValue('custentity_operational_update', operation_type);
@@ -168,8 +168,16 @@ function saveRecord() {
                     customerRecord.setFieldValue('custentity_suspend_to', null);
                     customerRecord.setFieldValue('custentity_operation_notes', operation_notes);
                 } else {
-                    alert('Please Enter Date Effective for Customer: ' + company_name);
-                    return false;
+                    if (operation_type != 7) {
+                        alert('Please Enter Date Effective for Customer: ' + company_name);
+                        return false;
+                    } else {
+                        customerRecord.setFieldValue('custentity_operational_update', operation_type);
+                        customerRecord.setFieldValue('custentity_date_effective', getDate());
+                        customerRecord.setFieldValue('custentity_suspend_from', null);
+                        customerRecord.setFieldValue('custentity_suspend_to', null);
+                        customerRecord.setFieldValue('custentity_operation_notes', operation_notes);
+                    }
                 }
             }
 
@@ -323,3 +331,14 @@ $(document).on('click', '.same_as_above', function() {
         $(this).closest('tr').find('.opening_date').val(null);
     }
 })
+
+function getDate() {
+    var date = new Date();
+    // if (date.getHours() > 6)
+    // {
+    //     date = nlapiAddDays(date, 1);
+    // }
+    date = nlapiDateToString(date);
+
+    return date;
+}
