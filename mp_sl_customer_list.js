@@ -1,13 +1,13 @@
 /**
  * Module Description
- *
- * NSVersion    Date                Author
- * 1.00         2017-08-03 16:59:04 Ankith
+ * 
+ * NSVersion    Date                Author         
+ * 1.00         2017-08-03 16:59:04 Ankith 
  *
  * Remarks: Page to show the list of all the customers based on the franchisee.
- *
- * @Last modified by:   ankithravindran
- * @Last modified time: 2022-05-05T15:28:50+10:00
+ * 
+ * @Last Modified by:   Ankith
+ * @Last Modified time: 2020-02-07 10:47:26
  *
  */
 
@@ -42,24 +42,20 @@ function main(request, response) {
 
     var form = nlapiCreateForm('Customer List');
 
-    var inlinehtml2 =
-      '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"><script src="//code.jquery.com/jquery-1.11.0.min.js"></script><link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"><link href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"><script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><link rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2060796&c=1048144&h=9ee6accfd476c9cae718&_xt=.css"/><script src="https://1048144.app.netsuite.com/core/media/media.nl?id=2060797&c=1048144&h=ef2cda20731d146b5e98&_xt=.js"></script><link type="text/css" rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2090583&c=1048144&h=a0ef6ac4e28f91203dfe&_xt=.css">';
+    var inlinehtml2 = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"><script src="//code.jquery.com/jquery-1.11.0.min.js"></script><link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"><link href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"><script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><link rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2060796&c=1048144&h=9ee6accfd476c9cae718&_xt=.css"/><script src="https://1048144.app.netsuite.com/core/media/media.nl?id=2060797&c=1048144&h=ef2cda20731d146b5e98&_xt=.js"></script><link type="text/css" rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2090583&c=1048144&h=a0ef6ac4e28f91203dfe&_xt=.css">';
 
-    inlinehtml2 +=
-      '<div class="se-pre-con"></div><button type="button" class="btn btn-sm btn-info instruction_button" data-toggle="collapse" data-target="#demo">Click for Instructions</button><div id="demo" style="background-color: #cfeefc !important;border: 1px solid #417ed9;padding: 10px 10px 10px 20px;width:96%;position:absolute" class="collapse"></div>';
+    inlinehtml2 += '<div class="se-pre-con"></div><button type="button" class="btn btn-sm btn-info instruction_button" data-toggle="collapse" data-target="#demo">Click for Instructions</button><div id="demo" style="background-color: #cfeefc !important;border: 1px solid #417ed9;padding: 10px 10px 10px 20px;width:96%;position:absolute" class="collapse"></div>';
 
     var inlineQty = '';
 
     //If role is Admin or System Support, dropdown to select zee
     if (role != 1000) {
 
-      inlinehtml2 +=
-        '<div class="col-xs-4 admin_section" style="width: 20%;left: 40%;position: absolute;"><b>Select Zee</b> <select class="form-control zee_dropdown" >';
+      inlinehtml2 += '<div class="col-xs-4 admin_section" style="width: 20%;left: 40%;position: absolute;"><b>Select Zee</b> <select class="form-control zee_dropdown" >';
 
       //WS Edit: Updated Search to SMC Franchisee (exc Old/Inactives)
       //Search: SMC - Franchisees
-      var searched_zee = nlapiLoadSearch('partner',
-        'customsearch_smc_franchisee');
+      var searched_zee = nlapiLoadSearch('partner', 'customsearch_smc_franchisee');
 
       var resultSet_zee = searched_zee.runSearch();
 
@@ -69,17 +65,15 @@ function main(request, response) {
 
       inlinehtml2 += '<option value=""></option>'
 
-      resultSet_zee.forEachResult(function(searchResult_zee) {
+      resultSet_zee.forEachResult(function (searchResult_zee) {
         zee_id = searchResult_zee.getValue('internalid');
         // WS Edit: Updated entityid to companyname
         zee_name = searchResult_zee.getValue('companyname');
 
         if (request.getParameter('zee') == zee_id) {
-          inlinehtml2 += '<option value="' + zee_id +
-            '" selected="selected">' + zee_name + '</option>';
+          inlinehtml2 += '<option value="' + zee_id + '" selected="selected">' + zee_name + '</option>';
         } else {
-          inlinehtml2 += '<option value="' + zee_id + '">' + zee_name +
-            '</option>';
+          inlinehtml2 += '<option value="' + zee_id + '">' + zee_name + '</option>';
         }
 
         return true;
@@ -93,11 +87,9 @@ function main(request, response) {
     }
 
 
-    form.addField('custpage_html2', 'inlinehtml').setPadding(1).setLayoutType(
-      'outsideabove').setDefaultValue(inlinehtml2);
+    form.addField('custpage_html2', 'inlinehtml').setPadding(1).setLayoutType('outsideabove').setDefaultValue(inlinehtml2);
 
-    inlineQty +=
-      '<br><br><style>table#customer {font-size:12px; font-weight:bold; border-color: #24385b;} </style><table border="0" cellpadding="15" id="customer" class="tablesorter table table-striped" cellspacing="0" style="width: 100%;"><thead style="color: white;background-color: #607799;"><tr><th class="col-sm-2"><b>REVIEW COMPLETE</b></th><th><b>ID</b></th><th><b>CUSTOMER NAME</b></th><th class="col-sm-4" style="text-align: center;"><b>ACTION</b></th></tr></thead><tbody>';
+    inlineQty += '<br><br><style>table#customer {font-size:12px; font-weight:bold; border-color: #24385b;} </style><table border="0" cellpadding="15" id="customer" class="tablesorter table table-striped" cellspacing="0" style="width: 100%;"><thead style="color: white;background-color: #607799;"><tr><th class="col-sm-2"><b>REVIEW COMPLETE</b></th><th><b>ID</b></th><th><b>CUSTOMER NAME</b></th><th class="col-sm-4" style="text-align: center;"><b>ACTION</b></th></tr></thead><tbody>';
 
 
 
@@ -109,11 +101,9 @@ function main(request, response) {
     var name = zeeRecord.getFieldValue('companyname');
 
     //Search: SMC - Customer
-    var customerSearch = nlapiLoadSearch('customer',
-      'customsearch_smc_customer');
+    var customerSearch = nlapiLoadSearch('customer', 'customsearch_smc_customer');
 
-    var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof',
-      zee);
+    var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof', zee);
     customerSearch.addFilter(addFilterExpression);
 
     //WS Edit: Remove Column. Incorporated in the actual search.
@@ -124,29 +114,19 @@ function main(request, response) {
     var resultSetCustomer = customerSearch.runSearch();
 
 
-    resultSetCustomer.forEachResult(function(searchResult) {
+    resultSetCustomer.forEachResult(function (searchResult) {
 
       var custid = searchResult.getValue('internalid', null, "GROUP");
       var entityid = searchResult.getValue('entityid', null, "GROUP");
       var companyname = searchResult.getValue('companyname', null, "GROUP");
 
       //WS Edit: Retrieve column values to Identify Reviewed Services and Correct CommReg
-      var serviceCount = searchResult.getValue("formulanumeric", null,
-        "MAX"); //Count of Reviewed Services
-      var commRegCount = searchResult.getValue("formulacurrency", null,
-        "COUNT"); //Count of Correct CommReg
+      var serviceCount = searchResult.getValue("formulanumeric", null, "MAX"); //Count of Reviewed Services
+      var commRegCount = searchResult.getValue("formulacurrency", null, "COUNT"); //Count of Correct CommReg
 
 
       //If service record is present for customer, Edit button is shown
-      inlineQty +=
-        '<tr class="dynatable-editable"><td style="text-align: center;"><img src="https://1048144.app.netsuite.com/core/media/media.nl?id=1990778&c=1048144&h=e7f4f60576de531265f7" height="25" width="25"></td><td><a href="' +
-        baseURL + '/app/common/entity/custjob.nl?id=' + custid +
-        '" target="_blank"><p style="text-align:left;">' + entityid +
-        '</p></a></td><td><p style="text-align:left;">' + companyname +
-        '</p></td><td><div class="row"><div class="col-sm-6"><input type="button" class="edit_customer form-control btn-primary" value="EDIT" onclick="onclick_reviewPage(' +
-        custid +
-        ')"></div><div class="col-sm-6"><input type="button" id="cancel_customer" class="form-control btn-danger" value="CANCEL" onclick="onclick_cancel(' +
-        custid + ')"></div></div></td></tr>';
+      inlineQty += '<tr class="dynatable-editable"><td style="text-align: center;"><img src="https://1048144.app.netsuite.com/core/media/media.nl?id=1990778&c=1048144&h=e7f4f60576de531265f7" height="25" width="25"></td><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + custid + '" target="_blank"><p style="text-align:left;">' + entityid + '</p></a></td><td><p style="text-align:left;">' + companyname + '</p></td><td><div class="row"><div class="col-sm-6"><input type="button" class="edit_customer form-control btn-primary" value="EDIT" onclick="onclick_reviewPage(' + custid + ')"></div><div class="col-sm-6"><input type="button" id="cancel_customer" class="form-control btn-danger" value="CANCEL" onclick="onclick_cancel(' + custid + ')"></div></div></td></tr>';
 
       return true;
     });
@@ -154,8 +134,7 @@ function main(request, response) {
     inlineQty += '</tbody>';
     inlineQty += '</table><br/>';
 
-    form.addField('preview_table', 'inlinehtml', '').setLayoutType(
-      'outsidebelow', 'startrow').setDefaultValue(inlineQty);
+    form.addField('preview_table', 'inlinehtml', '').setLayoutType('outsidebelow', 'startrow').setDefaultValue(inlineQty);
 
     //WS Edit: Updated customscript_cl_smc_summary to comment dynatable sort
     form.setScript('customscript_cl_customer_list');

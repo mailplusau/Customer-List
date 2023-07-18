@@ -1,9 +1,14 @@
 /*
- * @Author: ankith.ravindran
- * @Date:   2018-08-20 11:21:44
- * @Last Modified by:   ankit
- * @Last Modified time: 2020-10-23 10:03:00
+ 
+ * Author:               Ankith Ravindran
+ * Created on:           2020-10-23 10:03:00
+ * Modified on:          2020-10-23 10:03:00
+ * SuiteScript Version:   
+ * Description:           
+ *
+ * Copyright (c) 2023 MailPlus Pty. Ltd.
  */
+
 var ctx = nlapiGetContext();
 
 var zee = 0;
@@ -52,7 +57,7 @@ function main(request, response) {
 
 			inlinehtml2 += '<option value=""></option>'
 
-			resultSet_zee.forEachResult(function(searchResult_zee) {
+			resultSet_zee.forEachResult(function (searchResult_zee) {
 
 				zee_id = searchResult_zee.getValue('internalid');
 				zee_name = searchResult_zee.getValue('entityid');

@@ -7,7 +7,7 @@
  * Remarks: Client script for the Customer List Page
  *
  * @Last modified by:   ankithravindran
- * @Last modified time: 2022-05-05T14:42:54+10:00
+ * @Last modified time: 2022-05-05T14:41:23+10:00
  *
  */
 
@@ -18,7 +18,7 @@ if (nlapiGetContext().getEnvironment() == "SANDBOX") {
 }
 
 //To show loader while the page is laoding
-$(window).load(function() {
+$(window).load(function () {
   // Animate loader off screen
   $(".se-pre-con").fadeOut("slow");;
 });
@@ -32,8 +32,8 @@ function pageInit() {
     'head');
 
   //JQuery to sort table based on click of header. Attached library
-  jQuery(document).ready(function() {
-    jQuery("#customer").bind('dynatable:init', function(e, dynatable) {
+  jQuery(document).ready(function () {
+    jQuery("#customer").bind('dynatable:init', function (e, dynatable) {
       dynatable.sorts.clear();
       //WS Edit: remove sort
       //dynatable.sorts.add('action', -1) // 1=ASCENDING, -1=DESCENDING
@@ -62,7 +62,7 @@ function pageInit() {
 
 }
 
-$(document).on('click', '.instruction_button', function(e) {
+$(document).on('click', '.instruction_button', function (e) {
 
   var mainTable2 = document.getElementsByClassName("uir-inline-tag");
   for (var i = 0; i < mainTable2.length; i++) {
@@ -87,14 +87,14 @@ function onclick_reviewPage(custid) {
   params = JSON.stringify(params);
 
   var upload_url = baseURL + nlapiResolveURL('SUITELET',
-      'customscript_sl_lead_capture2', 'customdeploy_sl_lead_capture2') +
+    'customscript_sl_lead_capture2', 'customdeploy_sl_lead_capture2') +
     '&unlayered=T&custparam_params=' + params;
   window.open(upload_url, "_blank",
     "height=750,width=650,modal=yes,alwaysRaised=yes");
 }
 
 //On selecting zee, reload the SMC - Summary page with selected Zee parameter
-$(document).on("change", ".zee_dropdown", function(e) {
+$(document).on("change", ".zee_dropdown", function (e) {
 
   var zee = $(this).val();
 
@@ -109,7 +109,7 @@ $(document).on("change", ".zee_dropdown", function(e) {
 //On click of Cancel, goes to the cancel page
 function onclick_cancel(custid) {
   var upload_url = baseURL + nlapiResolveURL('SUITELET',
-      'customscript_sl_cancel_customer', 'customdeploy_sl_cancel_customer') +
+    'customscript_sl_cancel_customer', 'customdeploy_sl_cancel_customer') +
     '&unlayered=T&custid=' + custid;
   window.open(upload_url, "_self",
     "height=750,width=650,modal=yes,alwaysRaised=yes");
@@ -128,8 +128,8 @@ function submit_cancel() {
 function commRegUpload(custid) {
 
   var upload_url = baseURL + nlapiResolveURL('SUITELET',
-      'customscript_sl_salesbtns_upload_file',
-      'customdeploy_sl_salesbtns_upload_file') + '&recid=' + custid +
+    'customscript_sl_salesbtns_upload_file',
+    'customdeploy_sl_salesbtns_upload_file') + '&recid=' + custid +
     '&sales_record_id=' + null + '&upload_file=F&upload_file_id=' + null +
     '&file_type=T&type=SMC';
   window.open(upload_url, "_self",
