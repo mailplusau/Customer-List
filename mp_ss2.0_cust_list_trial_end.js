@@ -51,13 +51,13 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record'],
 
                 //Email Body
                 var emailBody =
-                    'Dear Franchisee,</br></br>The Free Trial is ending for the below customers on ' + trialEndDate + '. </br>Please start invoicing this customer for the services provided from the next business day onwards. </br>';
-                emailBody += '<b><u>CUSTOMER DETAILS</u></b>: ' + count + '</br>';
-                emailBody += 'ID: ' + customerEntityId;
-                emailBody += 'NAME: ' + customerName;
-                emailBody += 'FRANCHISEE: ' + customerFranchisee;
-                emailBody += 'TRIAL END DATE: ' + trialEndDate;
-                emailBody += '<b><u>LINK</u></b>: ' + customerLink;
+                    'Dear Franchisee,</br></br>The Free Trial is ending for the below customers on ' + trialEndDate + '. </br>Please start invoicing this customer for the services provided from the next business day onwards. </br></br>';
+                emailBody += '<b><u>CUSTOMER DETAILS</u></b>: </br>';
+                emailBody += 'ID: ' + customerEntityId + '</br>';
+                emailBody += 'NAME: ' + customerName + '</br>';
+                emailBody += 'FRANCHISEE: ' + customerFranchisee + '</br>';
+                emailBody += 'TRIAL END DATE: ' + trialEndDate + '</br>';
+                emailBody += '<b><u>LINK</u></b>: ' + customerLink + '</br>';
 
                 //Send email to the Sales Rep
                 email.send({
@@ -65,7 +65,8 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record'],
                     recipients: customerFranchiseeId,
                     subject: subject,
                     body: emailBody,
-                    cc: ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au']
+                    cc: ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au'],
+                    bcc: ['ankith.ravindran@mailplus.com.au']
                 });
 
                 count++;

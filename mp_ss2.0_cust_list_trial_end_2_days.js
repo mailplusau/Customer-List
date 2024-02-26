@@ -51,12 +51,12 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record'],
 
                 //Email Body
                 var emailBody =
-                    'Dear Account Manager,</br></br>Trial Ending for the below customers on ' + trialEndDate + '. </br>Please review customer. </br>';
-                emailBody += '<b><u>CUSTOMER DETAILS</u></b>: ' + count + '</br>';
-                emailBody += 'ID: ' + customerEntityId;
-                emailBody += 'NAME: ' + customerName;
-                emailBody += 'FRANCHISEE: ' + customerFranchisee;
-                emailBody += 'TRIAL END DATE: ' + trialEndDate;
+                    'Dear Account Manager,</br></br>Trial Ending for the below customers on ' + trialEndDate + '. </br></br>Please review customer. </br></br>';
+                emailBody += '<b><u>CUSTOMER DETAILS</u></b>:</br>';
+                emailBody += 'ID: ' + customerEntityId + '</br>';
+                emailBody += 'NAME: ' + customerName + '</br>';
+                emailBody += 'FRANCHISEE: ' + customerFranchisee + '</br>';
+                emailBody += 'TRIAL END DATE: ' + trialEndDate + '</br>';
                 emailBody += '<b><u>LINK</u></b>: ' + customerLink;
 
                 //Send email to the Sales Rep
@@ -65,7 +65,8 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record'],
                     recipients: salesRepAssigned,
                     subject: subject,
                     body: emailBody,
-                    cc: ['luke.forbes@mailplus.com.au', 'belinda.urbani@mailplus.com.au']
+                    cc: ['luke.forbes@mailplus.com.au', 'belinda.urbani@mailplus.com.au'],
+                    bcc: ['ankith.ravindran@mailplus.com.au']
                 });
 
                 count++;
