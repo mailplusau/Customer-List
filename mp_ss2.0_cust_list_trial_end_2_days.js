@@ -39,6 +39,10 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record'],
                     'partner');
                 var salesRepAssigned = custListTrialEnd2DaysResultSet.getValue(
                     'custentity_mp_toll_salesrep');
+                var salesRecordLastAssigned = custListTrialEnd2DaysResultSet.getValue({
+                    name: "custrecord_sales_assigned",
+                    join: "CUSTRECORD_SALES_CUSTOMER"
+                });
                 var trialEndDate = custListTrialEnd2DaysResultSet.getValue(
                     'custentity_customer_trial_expiry_date');
 
@@ -62,10 +66,10 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record'],
                 //Send email to the Sales Rep
                 email.send({
                     author: 112209,
-                    recipients: salesRepAssigned,
+                    recipients: salesRecordLastAssigned,
                     subject: subject,
                     body: emailBody,
-                    cc: ['luke.forbes@mailplus.com.au', 'belinda.urbani@mailplus.com.au'],
+                    cc: ['luke.forbes@mailplus.com.au'],
                     bcc: ['ankith.ravindran@mailplus.com.au']
                 });
 
