@@ -28,7 +28,7 @@ define(['N/runtime', 'N/search', 'N/record', 'N/log', 'N/task', 'N/currentRecord
             var today = new Date();
             today.setHours(today.getHours() + 17);
 
-            //NetSuite Search: Customer List - End of Trial
+            //NetSuite Search: Customer List - End of Trial Today
             var custListTrialEndSearch = search.load({
                 type: 'customer',
                 id: 'customsearch_cust_list_trial_end'
