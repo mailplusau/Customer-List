@@ -12,9 +12,21 @@
 
 
 
-define(['N/email', 'N/runtime', 'N/search', 'N/record'],
-    function (email, runtime, search, record) {
-        function execute(context) {
+define(['N/runtime', 'N/search', 'N/record', 'N/log', 'N/task', 'N/currentRecord', 'N/format', 'N/https', 'N/email', 'N/url'],
+    function (runtime, search, record, log, task, currentRecord, format, https, email, url) {
+
+        var zee = 0;
+        var role = runtime.getCurrentUser().role;
+
+        var baseURL = 'https://1048144.app.netsuite.com';
+        if (runtime.envType == "SANDBOX") {
+            baseURL = 'https://system.sandbox.netsuite.com';
+        }
+
+        function main() {
+
+            var today = new Date();
+            today.setHours(today.getHours() + 17);
 
             //NetSuite Search: Customer List - End of Trial
             var custListTrialEndSearch = search.load({
@@ -22,7 +34,17 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record'],
                 id: 'customsearch_cust_list_trial_end'
             });
 
-            var count = 0;
+            var count = custListTrialEndSearch.runPaged().count;
+
+            log.debug({
+                title: 'count',
+                details: count
+            });
+            sendEmails(custListTrialEndSearch);
+
+        }
+
+        function sendEmails(custListTrialEndSearch) {
 
             custListTrialEndSearch.run().each(function (
                 custListTrialEndResultSet) {
@@ -39,7 +61,7 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record'],
                     'partner');
                 var salesRepAssigned = custListTrialEndResultSet.getValue(
                     'custentity_mp_toll_salesrep');
-                var trialEndDate = custListTrialEndResultSet.getValue(
+                var trialExpiryDate = custListTrialEndResultSet.getValue(
                     'custentity_customer_trial_expiry_date');
                 var salesRecordLastAssigned = custListTrialEndResultSet.getText({
                     name: "custrecord_sales_assigned",
@@ -66,21 +88,70 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record'],
                     join: "CUSTRECORD_CUSTOMER",
                 });
 
+                log.debug({
+                    title: 'trialExpiryDate',
+                    details: trialExpiryDate
+                })
+
                 var billingStartdate;
                 var formattedBillingStartToday;
 
                 trial_end_date_split = trialExpiryDate.split('/');
-                billingStartdate = new Date(trial_end_date_split[2] + "-" + trial_end_date_split[1] + "-" + trial_end_date_split[0]);
+
+
+                if (trial_end_date_split[0] < 10) trial_end_date_split[0] = '0' + trial_end_date_split[0];
+                if (trial_end_date_split[1] < 10) trial_end_date_split[1] = '0' + trial_end_date_split[1];
+
+                log.debug({
+                    title: 'trial_end_date_split[2]',
+                    details: trial_end_date_split[2]
+                })
+                log.debug({
+                    title: 'trial_end_date_split[1]',
+                    details: trial_end_date_split[1]
+                })
+                log.debug({
+                    title: 'trial_end_date_split[0]',
+                    details: trial_end_date_split[0]
+                })
+
+                billingStartdate = new Date(trial_end_date_split[2], trial_end_date_split[1], trial_end_date_split[0]);
+
+                log.debug({
+                    title: 'billingStartdate',
+                    details: billingStartdate
+                })
+
                 billingStartdate.setDate(billingStartdate.getDate() + 1)
 
                 var yyyy = billingStartdate.getFullYear();
                 var mm = billingStartdate.getMonth() + 1; // Months start at 0!
                 var dd = billingStartdate.getDate();
 
+                log.debug({
+                    title: 'yyyy',
+                    details: yyyy
+                })
+
+                log.debug({
+                    title: 'mm',
+                    details: mm
+                })
+
+                log.debug({
+                    title: 'dd',
+                    details: dd
+                })
+
                 if (dd < 10) dd = '0' + dd;
                 if (mm < 10) mm = '0' + mm;
 
                 formattedBillingStartToday = dd + '/' + mm + '/' + yyyy;
+
+                log.debug({
+                    title: 'formattedBillingStartToday',
+                    details: formattedBillingStartToday
+                })
 
                 var suiteletUrl = url.resolveScript({
                     scriptId: 'customscript_merge_email',
@@ -96,24 +167,9 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record'],
 
                 var emailHtml = response.body;
 
-                // var customerLink =
-                //     '<a href="https://1048144.app.netsuite.com/app/common/entity/custjob.nl?id=' + customerInternalId + '">' + customerEntityId + ' - ' + customerName + '</a>';
-
-                // //Email subject
+                //Email subject
                 var subject =
                     'Free Trial Successful - New Paying Customer!';
-
-                // //Email Body
-                // var emailBody =
-                //     'Dear Franchisee,</br></br>We are thrilled to inform you that ' + customerName + ', part of the LPO Program, is now a paying customer! They were highly satisfied with the service provided during their trial period. Please read this email carefully to ensure you have all the necessary details.' + trialEndDate + '. </br>Please start invoicing this customer for the services provided from the next business day onwards. </br></br>';
-                // emailBody += '<b><u>CUSTOMER DETAILS</u></b>: </br>';
-                // emailBody += 'ID: ' + customerEntityId + '</br>';
-                // emailBody += 'NAME: ' + customerName + '</br>';
-                // emailBody += 'FRANCHISEE: ' + customerFranchisee + '</br>';
-                // emailBody += 'ADDRESS: ' + customerAddress + '</br>';
-                // emailBody += 'TRIAL END DATE: ' + trialEndDate + '</br></br>';
-                // emailBody += 'Next Steps</br>As part of our continued professional service, please maintain proper communication with the customer. Ensure timely pick-up of their Aus Post items and lodge them at your assigned LPO. </br></br>Acknowledge New Customer & Invoicing</br>You will now need to invoice the customer from the date below with the services you provide. </br></br>';
-                // emailBody += '<b><u>LINK</u></b>: ' + customerLink + '</br>';
 
                 //Send email to the Sales Rep
                 email.send({
@@ -121,11 +177,11 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record'],
                     recipients: customerFranchiseeId,
                     subject: subject,
                     body: emailHtml,
-                    cc: salesRecordLastAssignedId,
+                    cc: [salesRecordLastAssignedId],
                     bcc: ['ankith.ravindran@mailplus.com.au']
                 });
 
-                count++;
+                // count++;
                 return true;
             });
         }
@@ -139,6 +195,6 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record'],
         }
 
         return {
-            execute: execute
+            execute: main
         };
     });
