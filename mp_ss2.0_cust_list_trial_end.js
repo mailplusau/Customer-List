@@ -77,7 +77,7 @@ define(['N/runtime', 'N/search', 'N/record', 'N/log', 'N/task', 'N/currentRecord
                     'shipaddress');
                 var contact_id = custListTrialEndResultSet.getValue({
                     name: "internalid",
-                    join: "contactPrimary"
+                    join: "contact"
                 });
                 var commReg = custListTrialEndResultSet.getValue({
                     name: "internalid",
