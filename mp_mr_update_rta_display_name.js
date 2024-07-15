@@ -16,6 +16,12 @@
 
 define(['N/runtime', 'N/file', 'N/log', 'N/email', 'N/search', 'N/record'], (runtime, file, log, email, search, record) => {
 
+    /**
+     * @description
+     * @author Ankith Ravindran (AR)
+     * @date 15/07/2024
+     * @returns {*} 
+     */
     function getInputData() {
 
         //Search Name:Active Customers - RTA - Display Name is Empty
@@ -28,14 +34,12 @@ define(['N/runtime', 'N/file', 'N/log', 'N/email', 'N/search', 'N/record'], (run
         return customerListToUpdateRTADisplayNameSeach
     }
 
-    // function map(context) {
-    //     log.debug('map context: ', context);
-    //     // context.write({
-    //     //     key: context.key,
-    //     //     value: 1
-    //     // });
-    // }
-
+    /**
+     * @description
+     * @author Ankith Ravindran (AR)
+     * @date 15/07/2024
+     * @param {*} context
+     */
     function reduce(context) {
         log.debug('reduce context: ', context);
         log.debug('context.values.length', context.values.length);
@@ -70,12 +74,19 @@ define(['N/runtime', 'N/file', 'N/log', 'N/email', 'N/search', 'N/record'], (run
 
     }
 
+    /**
+     * @description
+     * @author Ankith Ravindran (AR)
+     * @date 15/07/2024
+     * @param {*} summary
+     */
     function summarize(summary) {
         const type = summary.toString();
         log.audit({ title: type + ' Usage Consumed ', details: summary.usage });
         log.audit({ title: type + ' Concurrency Number ', details: summary.concurrency });
         log.audit({ title: type + ' Number of Yields ', details: summary.yields });
     }
+
     return {
         getInputData: getInputData,
         // map: map,
