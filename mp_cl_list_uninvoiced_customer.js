@@ -6,38 +6,48 @@ var role = ctx.getRole();
 if (role == 1000) {
 	//Franchisee
 	zee = ctx.getUser();
-} else if (role == 3) { //Administrator
-	zee = '6'; //test
-} else if (role == 1032) { // System Support
-	zee = '425904'; //test-AR
+} else if (role == 3) {
+	//Administrator
+	zee = "6"; //test
+} else if (role == 1032) {
+	// System Support
+	zee = "425904"; //test-AR
 }
 
-var baseURL = 'https://1048144.app.netsuite.com';
+var baseURL = "https://1048144.app.netsuite.com";
 if (nlapiGetContext().getEnvironment() == "SANDBOX") {
-	baseURL = 'https://system.sandbox.netsuite.com';
+	baseURL = "https://system.sandbox.netsuite.com";
 }
 
 //To show loader while the page is laoding
-$(window).load(function() {
+$(window).load(function () {
 	// Animate loader off screen
-	$(".se-pre-con").fadeOut("slow");;
+	$(".se-pre-con").fadeOut("slow");
 });
 
 var table;
 
 /**
- * [pageInit description] - On page initialization, load the Dynatable CSS and sort the table based on the customer name and align the table to the center of the page. 
+ * [pageInit description] - On page initialization, load the Dynatable CSS and sort the table based on the customer name and align the table to the center of the page.
  */
 function pageInit() {
-	$('#alert').hide();
-	// 
-	console.log('inside')
-	var searched = nlapiLoadSearch('customer', 'customsearch_audit_last_invoice_date');
+	$("#alert").hide();
+	//
+	console.log("inside");
+	var searched = nlapiLoadSearch(
+		"customer",
+		"customsearch_audit_last_invoice_date"
+	);
 
-	zee = nlapiGetFieldValue('zee')
+	zee = nlapiGetFieldValue("zee");
 
 	var newFilters = new Array();
-	newFilters[newFilters.length] = new nlobjSearchFilter('partner', null, 'is', zee);
+	newFilters[newFilters.length] = new nlobjSearchFilter(
+		"partner",
+		null,
+		"is",
+		zee
+	);
 
 	searched.addFilters(newFilters);
 
@@ -47,22 +57,25 @@ function pageInit() {
 
 	var zee_id;
 
-	console.log('inside2')
+	console.log("inside2");
 
 	var dataSet = '{"data":[';
 
-	resultSet.forEachResult(function(searchResult) {
-
+	resultSet.forEachResult(function (searchResult) {
 		var customer_id = searchResult.getValue("internalid", null, "GROUP");
 		var id = searchResult.getValue("entityid", null, "GROUP");
 		var name = searchResult.getValue("companyname", null, "GROUP");
 		var zee = searchResult.getValue("partner", null, "GROUP");
 		var status = searchResult.getValue("entitystatus", null, "GROUP");
 		var date_string = searchResult.getValue("trandate", "transaction", "MAX");
-		var invoice_type = searchResult.getText("custbody_inv_type", "transaction", "GROUP");
+		var invoice_type = searchResult.getText(
+			"custbody_inv_type",
+			"transaction",
+			"GROUP"
+		);
 
-		if(invoice_type == '- None -'){
-			invoice_type = 'Service'
+		if (invoice_type == "- None -") {
+			invoice_type = "Service";
 		}
 
 		var date = new Date();
@@ -77,18 +90,33 @@ function pageInit() {
 		}
 		var previous_year = year - 1;
 
-		var date_array = date_string.split('/');
+		var date_array = date_string.split("/");
 
 		console.log(date_array);
 		console.log(month + 1);
 
-		if (current_month == date_array[1] || previous_month == date_array[1] || (previous_year == date_array[2] && previous_month == date_array[1])) {
-
+		if (
+			current_month == date_array[1] ||
+			previous_month == date_array[1] ||
+			(previous_year == date_array[2] && previous_month == date_array[1])
+		) {
 		} else {
-			dataSet += '{"cust_id":"' + customer_id + '", "entity_id":"' + id + '", "company_name":"' + name + '", "status":"' + status + '", "date":"' + date_string + '", "invoice_type":"' + invoice_type + '"},';
+			dataSet +=
+				'{"cust_id":"' +
+				customer_id +
+				'", "entity_id":"' +
+				id +
+				'", "company_name":"' +
+				name +
+				'", "status":"' +
+				status +
+				'", "date":"' +
+				date_string +
+				'", "invoice_type":"' +
+				invoice_type +
+				'"},';
 			count++;
 		}
-
 
 		return true;
 	});
@@ -96,39 +124,47 @@ function pageInit() {
 	if (count > 0) {
 		dataSet = dataSet.substring(0, dataSet.length - 1);
 	}
-	dataSet += ']}';
+	dataSet += "]}";
 	console.log(dataSet);
 	var parsedData = JSON.parse(dataSet);
 
-
-
-	$(document).ready(function() {
+	$(document).ready(function () {
 		table = $("#customer").DataTable({
-			"data": parsedData.data,
-			"columns": [{
-				"orderable": false,
-				"data": null,
-				"defaultContent": ''
-			}, {
-				"data": "entity_id"
-			}, {
-				"data": "company_name"
-			}, {
-				"data": "invoice_type"
-			},{
-				"data": "date",
-			}],
-			"pageLength" : 100
+			data: parsedData.data,
+			columns: [
+				{
+					orderable: false,
+					data: null,
+					defaultContent: "",
+				},
+				{
+					data: "entity_id",
+				},
+				{
+					data: "company_name",
+				},
+				{
+					data: "invoice_type",
+				},
+				{
+					data: "date",
+				},
+				{
+					data: "no_services",
+				},
+				{
+					data: "cancelled",
+				},
+			],
+			pageLength: 100,
 			// "order": [
 			// 	[1, 'asc']
 			// ]
 		});
 	});
-
 }
 
-$(document).on("change", ".zee_dropdown", function(e) {
-
+$(document).on("change", ".zee_dropdown", function (e) {
 	var zee = $(this).val();
 
 	var url = baseURL + "/app/site/hosting/scriptlet.nl?script=815&deploy=1";
@@ -140,7 +176,6 @@ $(document).on("change", ".zee_dropdown", function(e) {
 
 //To check if todays date falls between the below criteria.
 function finalise_date() {
-
 	var date = new Date();
 
 	if (date.getHours() > 6) {
@@ -151,8 +186,7 @@ function finalise_date() {
 	var today = date.getDate();
 	var year = date.getFullYear();
 
-	var lastDay = new Date(year, (month + 1), 0);
-
+	var lastDay = new Date(year, month + 1, 0);
 
 	if (lastDay.getDay() == 0) {
 		lastDay.setDate(lastDay.getDate() - 2);
@@ -163,7 +197,6 @@ function finalise_date() {
 	var lastWorkingDay = lastDay.getDate();
 
 	lastDay.setDate(lastDay.getDate() + 5);
-
 
 	var button = false;
 
@@ -176,7 +209,6 @@ function finalise_date() {
 
 // Get the previous month first and last day
 function start_end_date() {
-
 	var date = new Date();
 
 	var month = date.getMonth(); //Months 0 - 11
@@ -186,13 +218,13 @@ function start_end_date() {
 	if (day == 1 || day == 2 || day == 3 || day == 4 || day == 5) {
 		if (month == 0) {
 			month = 11;
-			year = year - 1
+			year = year - 1;
 		} else {
 			month = month - 1;
 		}
 	}
-	var firstDay = new Date(year, (month), 1);
-	var lastDay = new Date(year, (month + 1), 0);
+	var firstDay = new Date(year, month, 1);
+	var lastDay = new Date(year, month + 1, 0);
 
 	var service_range = [];
 
