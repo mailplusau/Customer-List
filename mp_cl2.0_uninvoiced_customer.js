@@ -102,16 +102,52 @@ define([
 				value: "Franchisee Month End Audit - Customer Cancelled",
 			});
 			userNotedRecord.setValue({
+				fieldId: "entity",
+				value: customerInternalId,
+			});
+			userNotedRecord.setValue({
 				fieldId: "author",
 				value: userId,
 			});
 			userNotedRecord.setValue({
-				fieldId: "notedate",
-				value: getDate(),
+				fieldId: "note",
+				value: "Franchisee Month End Audit - Customer Cancelled",
 			});
+			userNotedRecord.setValue({
+				fieldId: "notedate",
+				value: getDateToday(),
+			});
+			userNotedRecord.save();
 		});
 
-		$(".noService").click(function () {});
+		$(".noService").click(function () {
+			var customerInternalId = $(this).attr("data-custid");
+
+			var userNotedRecord = record.create({
+				type: "note",
+			});
+			userNotedRecord.setValue({
+				fieldId: "title",
+				value: "Franchisee Month End Audit - No Service Performed",
+			});
+			userNotedRecord.setValue({
+				fieldId: "entity",
+				value: customerInternalId,
+			});
+			userNotedRecord.setValue({
+				fieldId: "author",
+				value: userId,
+			});
+			userNotedRecord.setValue({
+				fieldId: "note",
+				value: "Franchisee Month End Audit - No Service Performed",
+			});
+			userNotedRecord.setValue({
+				fieldId: "notedate",
+				value: getDateToday(),
+			});
+			userNotedRecord.save();
+		});
 	}
 	//Initialise the DataTable with headers.
 	function submitSearch() {
@@ -188,9 +224,9 @@ define([
 						custInternalID +
 						'"  class="custCancelled" style="cursor: pointer !important;color: white;">CANCELLED</a></button>';
 					var noServicesButton =
-						'<button class="form-control btn btn-xs btn-warning" style="cursor: not-allowed !important;width: fit-content;border-radius:30px;"><a data-custid="' +
+						'<a data-custid="' +
 						custInternalID +
-						'"  class="noService" style="cursor: pointer !important;color: white;">NO SERVICE PROVIDED</a></button>';
+						'"  class="noService" style="cursor: pointer !important;color: white;">NO SERVICE PROVIDED</a>';
 
 					customerListDataSet.push([
 						'<a href="' +
@@ -298,13 +334,9 @@ define([
 		return true;
 	}
 
-	/**
-	 * [getDate description] - Get the current date
-	 * @return {[String]} [description] - return the string date
-	 */
-	function getDate() {
+	function getDateToday() {
 		var date = new Date();
-		date = format.format({
+		format.format({
 			value: date,
 			type: format.Type.DATE,
 			timezone: format.Timezone.AUSTRALIA_SYDNEY,
