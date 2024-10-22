@@ -37,6 +37,9 @@ define([
 	var userId = 0;
 	var role = 0;
 
+	var noServiceProvidedCustomerInternalIDs = [];
+	var serviceCancelledCustomerInternalIDs = [];
+
 	var baseURL = "https://1048144.app.netsuite.com";
 	if (runtime.EnvType == "SANDBOX") {
 		baseURL = "https://1048144-sb3.app.netsuite.com";
@@ -49,22 +52,28 @@ define([
 
 	var customerListDataSet = [];
 
-	function pageLoad() {
-		$(".range_filter_section").addClass("hide");
-		$(".range_filter_section_top").addClass("hide");
-		$(".date_filter_section").addClass("hide");
-		$(".period_dropdown_section").addClass("hide");
+	function enableLoadingScreen() {
+		$(".instruction_div").addClass("hide");
+		$(".submit_section").addClass("hide");
 
+		if (role != 1000) {
+			$(".zee_dropdown_section").addClass("hide");
+			$(".zee_available_buttons_section").addClass("hide");
+		}
+		$(".datatable_section").addClass("hide");
 		$(".loading_section").removeClass("hide");
 	}
 
 	function afterSubmit() {
-		$(".instruction_div").addClass("hide");
+		$(".instruction_div").removeClass("hide");
+		$(".submit_section").removeClass("hide");
 
 		if (role != 1000) {
 			$(".zee_dropdown_section").removeClass("hide");
 			$(".zee_available_buttons_section").removeClass("hide");
 		}
+
+		$(".datatable_section").removeClass("hide");
 		$(".loading_section").addClass("hide");
 	}
 
@@ -74,6 +83,7 @@ define([
 		$("#body").css("background-color", "#CFE0CE");
 		submitSearch();
 
+		//Onclick event for the apply filter button
 		$("#applyFilter").click(function () {
 			zee = $("#zee_dropdown option:selected").val();
 
@@ -91,64 +101,189 @@ define([
 			window.location.href = url;
 		});
 
-		$(".custCancelled").click(function () {
-			var customerInternalId = $(this).attr("data-custid");
+		//when customer cancelled checkbox is checked
+		$(".custCancelled").change(function () {
+			console.log("cancelled");
 
-			var userNotedRecord = record.create({
-				type: "note",
-			});
-			userNotedRecord.setValue({
-				fieldId: "title",
-				value: "Franchisee Month End Audit - Customer Cancelled",
-			});
-			userNotedRecord.setValue({
-				fieldId: "entity",
-				value: customerInternalId,
-			});
-			userNotedRecord.setValue({
-				fieldId: "author",
-				value: userId,
-			});
-			userNotedRecord.setValue({
-				fieldId: "note",
-				value: "Franchisee Month End Audit - Customer Cancelled",
-			});
-			userNotedRecord.setValue({
-				fieldId: "notedate",
-				value: getDateToday(),
-			});
-			userNotedRecord.save();
+			if (this.checked) {
+				console.log("checked");
+				serviceCancelledCustomerInternalIDs.push($(this).attr("data-custid"));
+
+				var index = noServiceProvidedCustomerInternalIDs.indexOf(
+					$(this).attr("data-custid")
+				);
+				if (index > -1) {
+					noServiceProvidedCustomerInternalIDs.splice(index, 1);
+					$(this).closest("tr").find(".noService").prop("checked", false);
+				}
+			} else {
+				console.log("unchecked");
+				var index = serviceCancelledCustomerInternalIDs.indexOf(
+					$(this).attr("data-custid")
+				);
+				if (index > -1) {
+					serviceCancelledCustomerInternalIDs.splice(index, 1);
+				}
+			}
+
+			console.log(serviceCancelledCustomerInternalIDs);
 		});
 
-		$(".noService").click(function () {
-			var customerInternalId = $(this).attr("data-custid");
+		//when no service provided checkbox is checked
+		$(".noService").change(function () {
+			console.log("noService");
 
-			var userNotedRecord = record.create({
-				type: "note",
-			});
-			userNotedRecord.setValue({
-				fieldId: "title",
-				value: "Franchisee Month End Audit - No Service Performed",
-			});
-			userNotedRecord.setValue({
-				fieldId: "entity",
-				value: customerInternalId,
-			});
-			userNotedRecord.setValue({
-				fieldId: "author",
-				value: userId,
-			});
-			userNotedRecord.setValue({
-				fieldId: "note",
-				value: "Franchisee Month End Audit - No Service Performed",
-			});
-			userNotedRecord.setValue({
-				fieldId: "notedate",
-				value: getDateToday(),
-			});
-			userNotedRecord.save();
+			if (this.checked) {
+				console.log("checked");
+				noServiceProvidedCustomerInternalIDs.push($(this).attr("data-custid"));
+				var index = serviceCancelledCustomerInternalIDs.indexOf(
+					$(this).attr("data-custid")
+				);
+				if (index > -1) {
+					serviceCancelledCustomerInternalIDs.splice(index, 1);
+					$(this).closest("tr").find(".custCancelled").prop("checked", false);
+				}
+			} else {
+				console.log("unchecked");
+				var index = noServiceProvidedCustomerInternalIDs.indexOf(
+					$(this).attr("data-custid")
+				);
+				if (index > -1) {
+					noServiceProvidedCustomerInternalIDs.splice(index, 1);
+				}
+			}
+
+			console.log(noServiceProvidedCustomerInternalIDs);
+
+			return false;
+		});
+
+		//Submit button
+		$("#submit").click(function () {
+			enableLoadingScreen();
+			if (
+				isNullorEmpty(noServiceProvidedCustomerInternalIDs) &&
+				isNullorEmpty(serviceCancelledCustomerInternalIDs)
+			) {
+				alert("Please select atleast one customer to proceed");
+				afterSubmit();
+				return false;
+			} else {
+				for (var x = 0; x < noServiceProvidedCustomerInternalIDs.length; x++) {
+					var customerInternalId = noServiceProvidedCustomerInternalIDs[x];
+					var userNotedRecord = record.create({
+						type: "note",
+					});
+					userNotedRecord.setValue({
+						fieldId: "title",
+						value: "Franchisee Month End Audit - No Service Performed",
+					});
+					userNotedRecord.setValue({
+						fieldId: "entity",
+						value: customerInternalId,
+					});
+					userNotedRecord.setValue({
+						fieldId: "author",
+						value: userId,
+					});
+					userNotedRecord.setValue({
+						fieldId: "note",
+						value: "Franchisee Month End Audit - No Service Performed",
+					});
+					userNotedRecord.setValue({
+						fieldId: "notedate",
+						value: getDateToday(),
+					});
+					userNotedRecord.save();
+				}
+
+				for (var x = 0; x < serviceCancelledCustomerInternalIDs.length; x++) {
+					var customerInternalId = serviceCancelledCustomerInternalIDs[x];
+
+					var recCustomer = record.load({
+						type: "customer",
+						id: customerInternalId,
+					});
+					var partner = recCustomer.getValue({ fieldId: "partner" });
+					var customerEntityId = recCustomer.getValue({ fieldId: "entityid" });
+					var customerName = recCustomer.getValue({ fieldId: "companyname" });
+
+					var recPartner = record.load({
+						type: "partner",
+						id: partner,
+					});
+					var salesRep = recPartner.getValue({
+						fieldId: "custentity_sales_rep_assigned",
+					});
+
+					var userNotedRecord = record.create({
+						type: "note",
+					});
+					userNotedRecord.setValue({
+						fieldId: "title",
+						value: "Franchisee Month End Audit - Customer Cancelled",
+					});
+					userNotedRecord.setValue({
+						fieldId: "entity",
+						value: customerInternalId,
+					});
+					userNotedRecord.setValue({
+						fieldId: "author",
+						value: userId,
+					});
+					userNotedRecord.setValue({
+						fieldId: "note",
+						value: "Franchisee Month End Audit - Customer Cancelled",
+					});
+					userNotedRecord.setValue({
+						fieldId: "notedate",
+						value: getDateToday(),
+					});
+					userNotedRecord.save();
+
+					var emailSubject =
+						"Service Cancellation Requested by Franchisee- " +
+						customerEntityId +
+						" " +
+						customerName;
+
+					var emailBody =
+						"Franchisee has requested this customer to be cancelled. </br></br>Customer Details" +
+						"</br>";
+					emailBody +=
+						"Customer Name: " + customerEntityId + " " + customerName;
+
+					email.send({
+						author: 112209,
+						recipients: salesRep,
+						subject: emailSubject,
+						body: emailBody,
+						cc: [runtime.getCurrentUser().email],
+					});
+
+					recCustomer.setValue({
+						fieldId: "custentity_cancellation_requested",
+						value: 1,
+					});
+
+					recCustomer.setValue({
+						fieldId: "custentity_cancellation_requested_date",
+						value: getDateToday(),
+					});
+					recCustomer.setValue({
+						fieldId: "custentity_service_cancellation_notice",
+						value: 14,
+					});
+					recCustomer.setValue({
+						fieldId: "custentity_service_cancellation_reason",
+						value: 34,
+					});
+					recCustomer.save();
+				}
+			}
 		});
 	}
+
 	//Initialise the DataTable with headers.
 	function submitSearch() {
 		zee = currRec.getValue({
@@ -156,7 +291,7 @@ define([
 		});
 
 		if (!isNullorEmpty(zee)) {
-			//Search: SMC - Customer
+			//Search: AUDIT - Customers - Last Invoice Date
 			var custListSearchResults = search.load({
 				type: "customer",
 				id: "customsearch_audit_last_invoice_date",
@@ -206,10 +341,11 @@ define([
 
 				var current_month = month + 1;
 				var previous_month = current_month - 1;
+				var previous_year = year;
 				if (previous_month == 0) {
 					previous_month = 12;
+					previous_year = year - 1;
 				}
-				var previous_year = year - 1;
 
 				var date_array = date_string.split("/");
 
@@ -220,13 +356,17 @@ define([
 				) {
 				} else {
 					var cancelledButton =
-						'<button class="form-control btn btn-xs btn-danger" style="cursor: not-allowed !important;width: fit-content;border-radius:30px;"><a data-custid="' +
+						'<input type="checkbox" id="noService" class="custom-checkbox custCancelled" data-custid="' +
 						custInternalID +
-						'"  class="custCancelled" style="cursor: pointer !important;color: white;">CANCELLED</a></button>';
+						'" data-custentityid="' +
+						custID +
+						'" data-custname="' +
+						custCompanyName +
+						'"/>';
 					var noServicesButton =
-						'<a data-custid="' +
+						'<input type="checkbox" id="noService" class="custom-checkbox noService" data-custid="' +
 						custInternalID +
-						'"  class="noService" style="cursor: pointer !important;color: white;">NO SERVICE PROVIDED</a>';
+						'"/>';
 
 					customerListDataSet.push([
 						'<a href="' +
@@ -323,8 +463,15 @@ define([
 					targets: [0, 1, 3],
 					className: "bolded",
 				},
+				{
+					targets: [4, 5],
+					className: "col-xs-1",
+				},
 			],
-			rowCallback: function (row, data, index) {},
+			rowCallback: function (row, data, index) {
+				$(row).find("td:eq(4)").css("background-color", "#E9B775");
+				$(row).find("td:eq(5)").css("background-color", "#FFACAC");
+			},
 		});
 
 		afterSubmit();

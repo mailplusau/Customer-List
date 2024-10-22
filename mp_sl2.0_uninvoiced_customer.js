@@ -77,10 +77,10 @@ define([
 				"<style>.mandatory{color:red;} .body{background-color: #CFE0CE !important;}.wrapper{position:fixed;height:2em;width:2em;overflow:show;margin:auto;top:0;left:0;bottom:0;right:0;justify-content: center; align-items: center; display: -webkit-inline-box;} .ball{width: 22px; height: 22px; border-radius: 11px; margin: 0 10px; animation: 2s bounce ease infinite;} .blue{background-color: #0f3d39; }.red{background-color: #095C7B; animation-delay: .25s;}.yellow{background-color: #387081; animation-delay: .5s}.green{background-color: #d0e0cf; animation-delay: .75s}@keyframes bounce{50%{transform: translateY(25px);}}.select2-selection__choice{ background-color: #095C7B !important; color: white !important}.select2-selection__choice__remove{color: red !important;}</style>";
 
 			//Loading Section that gets displayed when the page is being loaded
-            inlineHtml += loadingSection();
-            
-            inlineHtml +=
-				'<div class="container instruction_div hide" style="background-color: lightblue;font-size: 14px;padding: 15px;border-radius: 10px;border: 1px solid;box-shadow: 0px 1px 26px -10px white;"><p><b><u>Instructions</u></b></br><ul><li>The following customers have not been invoiced this month. </li><li>Please contact your Account Manager to express why these customers are not invoiced so we can either clean up your account or win back the customer’s business.</li></ul></br></div></br>';
+			inlineHtml += loadingSection();
+
+			inlineHtml +=
+				'<div class="container instruction_div hide" style="background-color: lightblue;font-size: 14px;padding: 15px;border-radius: 10px;border: 1px solid;box-shadow: 0px 1px 26px -10px white;"><p>This page displays a list of customers who have not been invoiced for the current month.  Your task is to review each customer and indicate whether no service was provided or if the customer should be cancelled.</br></br><b><u>Instructions</u></b></br><ol><li><b>Review the list</b>: Carefully examine the list of uninvoiced customers.</li><li><b>Select the appropriate checkbox</b>: For each customer, choose one of the following options: <ul><li><b>No Service Provided</b>: Check this box if no service was delivered to the customer this month.</li><li><b>Cancel Customer</b>: Check this box if the customer\'s account should be cancelled.</li></ul></li><li><b>Submit</b>: Once you have reviewed all customers and made your selections, click the "Submit" button to send the information to Head Office.</li></ol><b><u>Important Notes:</u></b><ul><li>Please ensure you select only one checkbox per customer.</li></ul></br></div></br>';
 
 			if (role != 1000) {
 				//Search: SMC - Franchisees
@@ -100,11 +100,11 @@ define([
 				inlineHtml += '<div class="col-xs-4"></div>';
 				inlineHtml += "</div>";
 				inlineHtml += "</div>";
-            }
-            
-            if(isNullorEmpty(zee)){
-                zee = userId;
-            }
+			}
+
+			if (isNullorEmpty(zee)) {
+				zee = userId;
+			}
 
 			form
 				.addField({
@@ -117,8 +117,18 @@ define([
 				}).defaultValue = zee;
 
 			inlineHtml += '<div id="container"></div>';
-
+			inlineHtml += '<div id="container datatable_section hide">';
 			inlineHtml += dataTable("customers");
+			inlineHtml += "</div>";
+
+			inlineHtml += '<div class="form-group container submit_section hide">';
+			inlineHtml += '<div class="row">';
+			inlineHtml += '<div class="col-xs-4"></div>';
+			inlineHtml +=
+				'<div class="col-xs-4"><input type="button" value="SUBMIT" class="form-control btn btn-success" id="submit" style="border-radius: 25px;background-color: #387478;"/></div>';
+			inlineHtml += '<div class="col-xs-4"></div>';
+			inlineHtml += "</div>";
+			inlineHtml += "</div>";
 
 			form
 				.addField({
@@ -195,19 +205,22 @@ define([
 			name +
 			" {color: #103D39 !important; font-size: 12px;text-align: center;border: none;}.dataTables_wrapper {font-size: 14px;}table#mpexusage-" +
 			name +
-			" th{text-align: center;} .bolded{font-weight: bold;}</style>";
+			" th{text-align: center;} .bolded{font-weight: bold;} .exportButtons{background-color: #045d7b !important;color: white !important;border-radius: 25px !important;}</style>";
 		inlineHtml +=
 			'<table id="mpexusage-' +
 			name +
 			'" class="table table-responsive customer tablesorter row-border cell-border compact" style="width: 100%;">';
 		inlineHtml +=
-			'<thead style="color: white;background-color: #095C7B;" hide>';
+			'<thead style="color: white;background-color: #095C7B;vertical" hide>';
 		inlineHtml += '<tr class="text-center">';
 
 		inlineHtml += "</tr>";
 		inlineHtml += "</thead>";
 
-		inlineHtml += '<tbody id="result_usage_' + name + '" ></tbody>';
+		inlineHtml +=
+			'<tbody id="result_usage_' +
+			name +
+			'" style="background-color: #f6f4f4;"></tbody>';
 
 		inlineHtml += "</table>";
 		return inlineHtml;
