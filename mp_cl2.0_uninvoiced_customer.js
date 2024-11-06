@@ -160,10 +160,11 @@ define([
 
 		//Submit button
 		$("#submit").click(function () {
-			enableLoadingScreen();
+			var customerCount = customerListDataSet.length;
 			if (
 				isNullorEmpty(noServiceProvidedCustomerInternalIDs) &&
-				isNullorEmpty(serviceCancelledCustomerInternalIDs)
+				isNullorEmpty(serviceCancelledCustomerInternalIDs) &&
+				customerCount > 0
 			) {
 				alert("Please select atleast one customer to proceed");
 				afterSubmit();
@@ -280,6 +281,21 @@ define([
 					});
 					recCustomer.save();
 				}
+
+				email.send({
+					author: 409635,
+					body: "Franchisee Month End Audit - Performed by " + userName,
+					recipients: [
+						"lee.simpson@mailplus.com.au",
+						"vira.nathania@mailplus.com.au",
+					],
+					subject: "Franchisee Month End Audit - Performed by " + userName,
+				});
+
+				var url =
+					"https://1048144.app.netsuite.com/app/center/card.nl?sc=-29&whence=";
+
+				window.location.href = url;
 			}
 		});
 	}
