@@ -52,6 +52,17 @@ define([
 
 	var customerListDataSet = [];
 
+	var date;
+	var month;
+	var today;
+	var year;
+	var current_month;
+	var previous_month;
+	var previous_year;
+	var lastDayOfMonth;
+	var showPreviousMonth = false;
+	var last4DaysOfMonth = false;
+
 	function enableLoadingScreen() {
 		$(".instruction_div").addClass("hide");
 		$(".submit_section").addClass("hide");
@@ -81,6 +92,31 @@ define([
 		$("#NS_MENU_ID0-item0").css("background-color", "#CFE0CE");
 		$("#NS_MENU_ID0-item0 a").css("background-color", "#CFE0CE");
 		$("#body").css("background-color", "#CFE0CE");
+
+		date = new Date();
+		month = date.getMonth(); //Months 0 - 11
+		today = date.getDate();
+		year = date.getFullYear();
+
+		current_month = month + 1;
+		previous_month = current_month - 1;
+		previous_year = year;
+		if (previous_month == 0) {
+			previous_month = 12;
+			previous_year = year - 1;
+		}
+		// Get the last day of the month
+		lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+
+		// if (day <= 4) {
+		// 	showPreviousMonth = true;
+		// } else
+		if (today >= lastDayOfMonth - 3) {
+			last4DaysOfMonth = true;
+		} else {
+			showPreviousMonth = true;
+		}
+
 		submitSearch();
 
 		//Onclick event for the apply filter button
@@ -322,6 +358,13 @@ define([
 				})
 			);
 
+			var oldCustInternalID = null;
+			var oldCustID = null;
+			var oldCustCompanyName = null;
+			var old_invoice_type = null;
+			var old_date_string = null;
+			var move_to_next_record = false;
+
 			custListSearchResults.run().each(function (custListSearchResultSet) {
 				var custInternalID = custListSearchResultSet.getValue({
 					name: "internalid",
@@ -345,60 +388,149 @@ define([
 					join: "transaction",
 					summary: "MAX",
 				});
+				var invoice_amount = parseFloat(
+					custListSearchResultSet.getValue({
+						name: "amount",
+						join: "transaction",
+						summary: "GROUP",
+					})
+				).toFixed(2);
 
 				if (invoice_type == "- None -") {
 					invoice_type = "Service";
 				}
 
-				var date = new Date();
-				var month = date.getMonth(); //Months 0 - 11
-				var today = date.getDate();
-				var year = date.getFullYear();
-
-				var current_month = month + 1;
-				var previous_month = current_month - 1;
-				var previous_year = year;
-				if (previous_month == 0) {
-					previous_month = 12;
-					previous_year = year - 1;
-				}
-
 				var date_array = date_string.split("/");
 
-				if (
-					current_month == date_array[1] ||
-					previous_month == date_array[1] ||
-					(previous_year == date_array[2] && previous_month == date_array[1])
-				) {
-				} else {
-					var cancelledButton =
-						'<input type="checkbox" id="noService" class="custom-checkbox custCancelled" data-custid="' +
-						custInternalID +
-						'" data-custentityid="' +
-						custID +
-						'" data-custname="' +
-						custCompanyName +
-						'"/>';
-					var noServicesButton =
-						'<input type="checkbox" id="noService" class="custom-checkbox noService" data-custid="' +
-						custInternalID +
-						'"/>';
+				if (showPreviousMonth == true) {
+					if (
+						oldCustInternalID == null ||
+						oldCustInternalID != custInternalID
+					) {
+						if (
+							previous_month == date_array[1] &&
+							previous_year == date_array[2] &&
+							invoice_amount > 0
+						) {
+							move_to_next_record = true;
+						} else {
+							var cancelledButton =
+								'<input type="checkbox" id="noService" class="custom-checkbox custCancelled" data-custid="' +
+								custInternalID +
+								'" data-custentityid="' +
+								custID +
+								'" data-custname="' +
+								custCompanyName +
+								'"/>';
+							var noServicesButton =
+								'<input type="checkbox" id="noService" class="custom-checkbox noService" data-custid="' +
+								custInternalID +
+								'"/>';
 
-					customerListDataSet.push([
-						'<a href="' +
-							baseURL +
-							"/app/common/entity/custjob.nl?id=" +
-							custInternalID +
-							'" target="_blank">' +
-							custID +
-							"</a>",
-						custCompanyName,
-						invoice_type,
-						date_string,
-						noServicesButton,
-						cancelledButton,
-					]);
+							customerListDataSet.push([
+								'<a href="' +
+									baseURL +
+									"/app/common/entity/custjob.nl?id=" +
+									custInternalID +
+									'" target="_blank">' +
+									custID +
+									"</a>",
+								custCompanyName,
+								invoice_type,
+								date_string,
+								invoice_amount,
+								noServicesButton,
+								cancelledButton,
+							]);
+							move_to_next_record = true;
+						}
+					}
+				} else if (last4DaysOfMonth == true) {
+					if (
+						oldCustInternalID == null ||
+						oldCustInternalID != custInternalID
+					) {
+						if (
+							current_month == date_array[1] &&
+							year == date_array[2] &&
+							invoice_amount > 0
+						) {
+							move_to_next_record = true;
+						} else {
+							var cancelledButton =
+								'<input type="checkbox" id="noService" class="custom-checkbox custCancelled" data-custid="' +
+								custInternalID +
+								'" data-custentityid="' +
+								custID +
+								'" data-custname="' +
+								custCompanyName +
+								'"/>';
+							var noServicesButton =
+								'<input type="checkbox" id="noService" class="custom-checkbox noService" data-custid="' +
+								custInternalID +
+								'"/>';
+
+							customerListDataSet.push([
+								'<a href="' +
+									baseURL +
+									"/app/common/entity/custjob.nl?id=" +
+									custInternalID +
+									'" target="_blank">' +
+									custID +
+									"</a>",
+								custCompanyName,
+								invoice_type,
+								date_string,
+								invoice_amount,
+								noServicesButton,
+								cancelledButton,
+							]);
+
+							move_to_next_record = true;
+						}
+					}
 				}
+
+				// if (
+				// 	current_month == date_array[1] ||
+				// 	previous_month == date_array[1] ||
+				// 	(previous_year == date_array[2] && previous_month == date_array[1])
+				// ) {
+				// } else {
+				// 	var cancelledButton =
+				// 		'<input type="checkbox" id="noService" class="custom-checkbox custCancelled" data-custid="' +
+				// 		custInternalID +
+				// 		'" data-custentityid="' +
+				// 		custID +
+				// 		'" data-custname="' +
+				// 		custCompanyName +
+				// 		'"/>';
+				// 	var noServicesButton =
+				// 		'<input type="checkbox" id="noService" class="custom-checkbox noService" data-custid="' +
+				// 		custInternalID +
+				// 		'"/>';
+
+				// 	customerListDataSet.push([
+				// 		'<a href="' +
+				// 			baseURL +
+				// 			"/app/common/entity/custjob.nl?id=" +
+				// 			custInternalID +
+				// 			'" target="_blank">' +
+				// 			custID +
+				// 			"</a>",
+				// 		custCompanyName,
+				// 		invoice_type,
+				// 		date_string,
+				// 		noServicesButton,
+				// 		cancelledButton,
+				// 	]);
+				// }
+
+				oldCustInternalID = custInternalID;
+				oldCustID = custID;
+				oldCustCompanyName = custCompanyName;
+				old_invoice_type = invoice_type;
+				old_date_string = date_string;
 				return true;
 			});
 		}
@@ -407,7 +539,7 @@ define([
 			destroy: true,
 			data: customerListDataSet,
 			pageLength: 1000,
-			order: [[2, "asc"]],
+			order: [[1, "asc"]],
 			layout: {
 				topStart: {
 					buttons: [
@@ -456,22 +588,25 @@ define([
 			},
 			columns: [
 				{
-					title: "ID", //1
+					title: "ID", //0
 				},
 				{
-					title: "Company Name", //2
+					title: "Company Name", //1
 				},
 				{
 					title: "Invoice Type", //2
 				},
 				{
-					title: "Last Invoice Date", //2
+					title: "Last Invoice Date", //3
 				},
 				{
-					title: "No Service Provided", //2
+					title: "Last Invoice Amount", //4
 				},
 				{
-					title: "Customer Cancelled", //2
+					title: "No Service Provided", //5
+				},
+				{
+					title: "Customer Cancelled", //6
 				},
 			],
 			columnDefs: [
@@ -480,13 +615,13 @@ define([
 					className: "bolded",
 				},
 				{
-					targets: [4, 5],
+					targets: [5, 6],
 					className: "col-xs-1",
 				},
 			],
 			rowCallback: function (row, data, index) {
-				$(row).find("td:eq(4)").css("background-color", "#E9B775");
-				$(row).find("td:eq(5)").css("background-color", "#FFACAC");
+				$(row).find("td:eq(5)").css("background-color", "#E9B775");
+				$(row).find("td:eq(6)").css("background-color", "#FFACAC");
 			},
 		});
 
