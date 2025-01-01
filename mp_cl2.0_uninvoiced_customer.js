@@ -111,7 +111,7 @@ define([
 		// if (day <= 4) {
 		// 	showPreviousMonth = true;
 		// } else
-		if (today >= lastDayOfMonth - 3) {
+		if (today >= lastDayOfMonth - 7 || today == lastDayOfMonth) {
 			last4DaysOfMonth = true;
 		} else {
 			showPreviousMonth = true;
@@ -342,6 +342,8 @@ define([
 			fieldId: "custpage_zee_id",
 		});
 
+		console.log("zee:", zee);
+
 		if (!isNullorEmpty(zee)) {
 			//Search: AUDIT - Customers - Last Invoice Date
 			var custListSearchResults = search.load({
@@ -354,7 +356,7 @@ define([
 					name: "partner",
 					join: null,
 					operator: search.Operator.IS,
-					values: zee,
+					values: parseInt(zee),
 				})
 			);
 
@@ -388,13 +390,13 @@ define([
 					join: "transaction",
 					summary: "MAX",
 				});
-				var invoice_amount = parseFloat(
-					custListSearchResultSet.getValue({
-						name: "amount",
-						join: "transaction",
-						summary: "GROUP",
-					})
-				).toFixed(2);
+				// var invoice_amount = parseFloat(
+				// 	custListSearchResultSet.getValue({
+				// 		name: "amount",
+				// 		join: "transaction",
+				// 		summary: "GROUP",
+				// 	})
+				// ).toFixed(2);
 
 				if (invoice_type == "- None -") {
 					invoice_type = "Service";
@@ -409,8 +411,7 @@ define([
 					) {
 						if (
 							previous_month == date_array[1] &&
-							previous_year == date_array[2] &&
-							invoice_amount > 0
+							previous_year == date_array[2]
 						) {
 							move_to_next_record = true;
 						} else {
@@ -438,7 +439,7 @@ define([
 								custCompanyName,
 								invoice_type,
 								date_string,
-								invoice_amount,
+								// invoice_amount,
 								noServicesButton,
 								cancelledButton,
 							]);
@@ -450,11 +451,7 @@ define([
 						oldCustInternalID == null ||
 						oldCustInternalID != custInternalID
 					) {
-						if (
-							current_month == date_array[1] &&
-							year == date_array[2] &&
-							invoice_amount > 0
-						) {
+						if (current_month == date_array[1] && year == date_array[2]) {
 							move_to_next_record = true;
 						} else {
 							var cancelledButton =
@@ -481,7 +478,7 @@ define([
 								custCompanyName,
 								invoice_type,
 								date_string,
-								invoice_amount,
+								// invoice_amount,
 								noServicesButton,
 								cancelledButton,
 							]);
@@ -599,14 +596,14 @@ define([
 				{
 					title: "Last Invoice Date", //3
 				},
+				// {
+				// 	title: "Last Invoice Amount", //4
+				// },
 				{
-					title: "Last Invoice Amount", //4
+					title: "No Service Provided", //4
 				},
 				{
-					title: "No Service Provided", //5
-				},
-				{
-					title: "Customer Cancelled", //6
+					title: "Customer Cancelled", //5
 				},
 			],
 			columnDefs: [
@@ -615,7 +612,7 @@ define([
 					className: "bolded",
 				},
 				{
-					targets: [5, 6],
+					targets: [4, 5],
 					className: "col-xs-1",
 				},
 			],
