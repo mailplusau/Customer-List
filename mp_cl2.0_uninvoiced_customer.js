@@ -488,40 +488,7 @@ define([
 					}
 				}
 
-				// if (
-				// 	current_month == date_array[1] ||
-				// 	previous_month == date_array[1] ||
-				// 	(previous_year == date_array[2] && previous_month == date_array[1])
-				// ) {
-				// } else {
-				// 	var cancelledButton =
-				// 		'<input type="checkbox" id="noService" class="custom-checkbox custCancelled" data-custid="' +
-				// 		custInternalID +
-				// 		'" data-custentityid="' +
-				// 		custID +
-				// 		'" data-custname="' +
-				// 		custCompanyName +
-				// 		'"/>';
-				// 	var noServicesButton =
-				// 		'<input type="checkbox" id="noService" class="custom-checkbox noService" data-custid="' +
-				// 		custInternalID +
-				// 		'"/>';
-
-				// 	customerListDataSet.push([
-				// 		'<a href="' +
-				// 			baseURL +
-				// 			"/app/common/entity/custjob.nl?id=" +
-				// 			custInternalID +
-				// 			'" target="_blank">' +
-				// 			custID +
-				// 			"</a>",
-				// 		custCompanyName,
-				// 		invoice_type,
-				// 		date_string,
-				// 		noServicesButton,
-				// 		cancelledButton,
-				// 	]);
-				// }
+				
 
 				oldCustInternalID = custInternalID;
 				oldCustID = custID;
