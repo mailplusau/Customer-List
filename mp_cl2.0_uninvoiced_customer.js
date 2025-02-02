@@ -292,7 +292,8 @@ define([
 
 					email.send({
 						author: 112209,
-						recipients: salesRep,
+						recipients: 1807440, // All Customer cancellation request from Francchisees will be sent to Sarah
+						// recipients: salesRep,
 						subject: emailSubject,
 						body: emailBody,
 						cc: [runtime.getCurrentUser().email],
@@ -487,8 +488,6 @@ define([
 						}
 					}
 				}
-
-				
 
 				oldCustInternalID = custInternalID;
 				oldCustID = custID;
