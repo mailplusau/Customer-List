@@ -316,6 +316,20 @@ define([
 						fieldId: "custentity_service_cancellation_reason",
 						value: 34,
 					});
+
+					customerRecord.setValue({
+						fieldId: "custentity_service_cancellation_theme",
+						value: 29, //HO Administrative
+					});
+					customerRecord.setValue({
+						fieldId: "custentity_service_cancellation_what",
+						value: 65, //Head Office Cancelled
+					});
+					customerRecord.setValue({
+						fieldId: "custentity_service_cancellation_why",
+						value: 66, //Data Wash
+					});
+
 					recCustomer.save();
 				}
 
@@ -431,12 +445,12 @@ define([
 
 							customerListDataSet.push([
 								'<a href="' +
-									baseURL +
-									"/app/common/entity/custjob.nl?id=" +
-									custInternalID +
-									'" target="_blank">' +
-									custID +
-									"</a>",
+								baseURL +
+								"/app/common/entity/custjob.nl?id=" +
+								custInternalID +
+								'" target="_blank">' +
+								custID +
+								"</a>",
 								custCompanyName,
 								invoice_type,
 								date_string,
@@ -470,12 +484,12 @@ define([
 
 							customerListDataSet.push([
 								'<a href="' +
-									baseURL +
-									"/app/common/entity/custjob.nl?id=" +
-									custInternalID +
-									'" target="_blank">' +
-									custID +
-									"</a>",
+								baseURL +
+								"/app/common/entity/custjob.nl?id=" +
+								custInternalID +
+								'" target="_blank">' +
+								custID +
+								"</a>",
 								custCompanyName,
 								invoice_type,
 								date_string,
