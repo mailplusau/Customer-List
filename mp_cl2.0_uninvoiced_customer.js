@@ -317,15 +317,15 @@ define([
 						value: 34,
 					});
 
-					customerRecord.setValue({
+					recCustomer.setValue({
 						fieldId: "custentity_service_cancellation_theme",
 						value: 29, //HO Administrative
 					});
-					customerRecord.setValue({
+					recCustomer.setValue({
 						fieldId: "custentity_service_cancellation_what",
 						value: 65, //Head Office Cancelled
 					});
-					customerRecord.setValue({
+					recCustomer.setValue({
 						fieldId: "custentity_service_cancellation_why",
 						value: 66, //Data Wash
 					});
